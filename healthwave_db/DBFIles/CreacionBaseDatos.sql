@@ -5,22 +5,23 @@ CREATE TABLE PerfilUsuario (
     NumLicenciaMedica VARCHAR(50),
     Nombre VARCHAR(100) NOT NULL,
     Apellido VARCHAR(100) NOT NULL,
-    Genero CHAR(1) NOT NULL CHECK (Genero IN ('M', 'F')),
+    Género CHAR(1) NOT NULL CHECK (Género IN ('M', 'F')),
     FechaNacimiento DATE NOT NULL,
-    Telefono VARCHAR(20),
+    Teléfono VARCHAR(20),
     Correo VARCHAR(100),
-    Direccion VARCHAR(200),
+    Dirección VARCHAR(200),
     Rol CHAR(1) NOT NULL CHECK (Rol IN ('P', 'A', 'M', 'E', 'C'))
 );
 GO
 
 --Create Cuenta table
-CREATE TABLE Cuenta (
-    IdUsuario VARCHAR(30) PRIMARY KEY,
-    NombreUsuario VARCHAR(50) NOT NULL,
-    Contraseña VARCHAR(255) NOT NULL
-    FOREIGN KEY (IdUsuario) REFERENCES PerfilUsuario(CodigoDocumento) ON UPDATE CASCADE ON DELETE CASCADE
-)
+CREATE TABLE Cuenta(
+    usuarioCodigo       VARCHAR(30)     PRIMARY KEY,
+    documentoUsuario    VARCHAR(30)     UNIQUE      NOT NULL,          -- Un usuario solo tiene un perfil asociado
+    usuarioContra       NVARCHAR(255)   NOT NULL,
+    FOREIGN KEY (documentoUsuario) REFERENCES PerfilUsuario(CodigoDocumento) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 
 -- Create TipoServicio Table
 CREATE TABLE TipoServicio (
@@ -33,8 +34,8 @@ GO
 CREATE TABLE Aseguradora (
     IDAseguradora INT IDENTITY(1,1) PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
-    Direccion VARCHAR(200),
-    Telefono VARCHAR(20),
+    Dirección VARCHAR(200),
+    Teléfono VARCHAR(20),
     Correo VARCHAR(100)
 );
 GO
@@ -43,13 +44,13 @@ GO
 CREATE TABLE Consultorio (
     IDConsultorio INT IDENTITY(1,1) PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
-    Direccion VARCHAR(200),
-    Telefono VARCHAR(20)
+    Dirección VARCHAR(200),
+    Teléfono VARCHAR(20)
 );
 GO
 
 -- Create Autorización Table
-CREATE TABLE Autorizacion (
+CREATE TABLE Autorización (
     IDAutorizacion INT IDENTITY(1,1) PRIMARY KEY,
     FechaAutorizacion DATE NOT NULL,
     MontoAutorizado DECIMAL(10, 2) DEFAULT 0.00,
@@ -62,7 +63,7 @@ GO
 CREATE TABLE Servicio (
     ServicioCodigo INT PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
-    Descripcion VARCHAR(200),
+    Descripción VARCHAR(200),
     TipoServicio INT,
     Costo DECIMAL(10, 2) DEFAULT 0.00,
     IDAseguradora INT,
@@ -75,7 +76,7 @@ GO
 CREATE TABLE Producto (
     IDProducto INT IDENTITY(1,1) PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
-    Descripcion VARCHAR(200),
+    Descripción VARCHAR(200),
     Precio DECIMAL(10, 2) DEFAULT 0.00
 );
 GO
@@ -91,7 +92,7 @@ GO
 CREATE TABLE Afeccion (
     IDAfeccion INT IDENTITY(1,1) PRIMARY KEY,
     Nombre VARCHAR(100) NOT NULL,
-    Descripcion VARCHAR(200)
+    Descripción VARCHAR(200)
 );
 GO
 
@@ -119,15 +120,13 @@ CREATE TABLE Consulta (
     Estado VARCHAR(50) NOT NULL,
     Costo DECIMAL(10, 2) DEFAULT 0.00,
     Motivo VARCHAR(200),
-    Descripcion VARCHAR(200),
+    Descripción VARCHAR(200),
     CodigoPaciente VARCHAR(30),
-    documentoMedico VARCHAR(30),
     IDConsultorio INT,
     IDAutorizacion INT,
     FOREIGN KEY (CodigoPaciente) REFERENCES PerfilUsuario(CodigoDocumento) ON UPDATE CASCADE ON DELETE NO ACTION,
-    FOREIGN KEY (documentoMedico) REFERENCES PerfilUsuario(documento)     ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (IDConsultorio) REFERENCES Consultorio(IDConsultorio) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (IDAutorizacion) REFERENCES Autorizacion(IDAutorizacion) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (IDAutorizacion) REFERENCES Autorización(IDAutorizacion) ON UPDATE CASCADE ON DELETE CASCADE
 );
 GO
 
@@ -146,13 +145,13 @@ CREATE TABLE Ingreso (
     FOREIGN KEY (CodigoPaciente) REFERENCES PerfilUsuario(CodigoDocumento) ON UPDATE NO ACTION ON DELETE NO ACTION,
     FOREIGN KEY (CodigoDocumentoMedico) REFERENCES PerfilUsuario(CodigoDocumento) ON UPDATE NO ACTION ON DELETE NO ACTION,
     FOREIGN KEY (ConsultaCodigo) REFERENCES Consulta(ConsultaCodigo) ON UPDATE NO ACTION ON DELETE NO ACTION,
-    FOREIGN KEY (IDAutorizacion) REFERENCES Autorizacion(IDAutorizacion) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (IDAutorizacion) REFERENCES Autorización(IDAutorizacion) ON UPDATE CASCADE ON DELETE CASCADE
 );
 GO
 
 -- Create Factura Table
 CREATE TABLE Factura (
-    FacturaCodigo VARCHAR(30) PRIMARY KEY,
+    FacturaCodigo INT PRIMARY KEY,
     MontoTotal DECIMAL(10, 2) DEFAULT 0.00,
     MontoSubtotal DECIMAL(10, 2) DEFAULT 0.00,
     Fecha DATE NOT NULL,
@@ -172,14 +171,14 @@ GO
 
 -- Create FacturaServicio Table
 CREATE TABLE FacturaServicio (
-    FacturaCodigo VARCHAR(30),
+    FacturaCodigo INT,
     IDProducto INT,
     IDAutorizacion INT,
     Costo DECIMAL(10, 2) DEFAULT 0.00,
     PRIMARY KEY (FacturaCodigo, IDProducto),
     FOREIGN KEY (FacturaCodigo) REFERENCES Factura(FacturaCodigo) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (IDProducto) REFERENCES Producto(IDProducto) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (IDAutorizacion) REFERENCES Autorizacion(IDAutorizacion) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (IDAutorizacion) REFERENCES Autorización(IDAutorizacion) ON UPDATE CASCADE ON DELETE CASCADE
 );
 GO
 
@@ -236,7 +235,7 @@ GO
 
 -- Create FacturaProducto Table
 CREATE TABLE FacturaProducto (
-    FacturaCodigo VARCHAR(30),
+    FacturaCodigo INT,
     IDProducto INT,
     IDAutorizacion INT,
     Precio DECIMAL(10, 2) DEFAULT 0.00,
@@ -244,7 +243,7 @@ CREATE TABLE FacturaProducto (
     PRIMARY KEY (FacturaCodigo, IDProducto),
     FOREIGN KEY (FacturaCodigo) REFERENCES Factura(FacturaCodigo) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (IDProducto) REFERENCES Producto(IDProducto) ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (IDAutorizacion) REFERENCES Autorizacion(IDAutorizacion) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (IDAutorizacion) REFERENCES Autorización(IDAutorizacion) ON UPDATE CASCADE ON DELETE CASCADE
 );
 GO
 
@@ -254,6 +253,6 @@ CREATE TABLE Pago (
     MontoPagado DECIMAL(10, 2) DEFAULT 0.00,
     Fecha DATE NOT NULL,
     IDCuenta INT,
-    FOREIGN KEY (IDCuenta) REFERENCES CuentaCobrar(IDCuenta) ON UPDATE CASCADE ON DELETE CASCADE
+    FOREIGN KEY (IDCuenta) REFERENCES CuentaCobrar(IDCuenta) ON UPDATE CASCADE ON DELETE CASCADE
 );
 GO

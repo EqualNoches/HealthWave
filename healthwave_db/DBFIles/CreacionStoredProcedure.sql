@@ -319,24 +319,23 @@ GO
 --1)Generar las facturas asociadas a los servicios
 CREATE PROCEDURE ppFacturaRelacionarServicio
     @FacturaCodigo VARCHAR(30),
-	@IDProducto INT,
-	@IDAutorizacion INT,
+    @ServicioCodigo INT,
     @Costo DECIMAL(10, 2)
 AS
 BEGIN
-    INSERT INTO FacturaServicio (FacturaCodigo, IDProducto,IDAutorizacion, Costo)
-    VALUES (@FacturaCodigo, @IDProducto, @IDAutorizacion, @Costo);
+    INSERT INTO FacturaServicio (FacturaCodigo, ServicioCodigo, Costo)
+    VALUES (@FacturaCodigo, @ServicioCodigo, @Costo);
 END;
 GO
 
 --2)Eliminar las facturas asociadas a los servicios
 CREATE PROCEDURE ppFacturaDesrelacionarServicio
     @FacturaCodigo VARCHAR(30),
-    @IDAutorizacion INT
+    @ServicioCodigo INT
 AS
 BEGIN
     DELETE FROM FacturaServicio
-    WHERE FacturaCodigo = @FacturaCodigo AND IDAutorizacion = @IDAutorizacion;
+    WHERE FacturaCodigo = @FacturaCodigo AND ServicioCodigo = @ServicioCodigo;
 END;
 GO
 

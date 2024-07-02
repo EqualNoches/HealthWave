@@ -1,7 +1,7 @@
-# Hospital Management System
+# Health Wave
 ## Descripción
 
-El Hospital Management System es una aplicación integral diseñada para la gestión, automatización y registro de todas las citas, consultas y procedimientos realizados en un hospital. Además, se encarga de todos los procesos relacionados con el registro y la facturación. Este sistema facilita la administración eficiente de los recursos hospitalarios y mejora la experiencia tanto de los pacientes como del personal médico.
+El Health Wave es una aplicación integral diseñada para la gestión, automatización y registro de todas las citas, consultas y procedimientos realizados en un hospital. Además, se encarga de todos los procesos relacionados con el registro y la facturación. Este sistema facilita la administración eficiente de los recursos hospitalarios y mejora la experiencia tanto de los pacientes como del personal médico.
 Tecnologías Utilizadas
 
    - ASP.NET Core: Utilizado para el core de la aplicación, manejando la lógica de negocio y la interacción con la base de datos.

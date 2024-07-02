@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using HospitalCore_core.Models;
+
+using HospitalCore_core.DTO;
 
 namespace HospitalCore_core.Services.Interfaces
 {
     public interface IAutorizacionService
     {
-        Task<Autorizacion?> GetAutorizacionById(int id);
-        Task<int> AddAutorizacion(Autorizacion autorizacion, int? idIngreso, string? consultaCodigo,
-            string? facturaCodigo, string? servicioCodigo, int? idProducto);
-        Task<int> UpdateAutorizacionAsync(Autorizacion autorizacion);
+        Task<int> AddAutorizacion(AutorizacionDTO autorizacion, int? idIngreso, string? consultaCodigo, string? facturaCodigo, string? servicioCodigo, int? idProducto);
         Task<int> DeleteAutorizacionAsync(int id);
-        Task<List<Autorizacion>> GetAllAutorizaciones();
+        Task<List<AutorizacionDTO>> GetAllAutorizaciones();
+        Task<AutorizacionDTO?> GetAutorizacionById(int id);
+        Task<int> UpdateAutorizacionAsync(AutorizacionDTO autorizacion);
     }
 }

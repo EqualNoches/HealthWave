@@ -1,115 +1,212 @@
+using HospitalCore_core.Context;
+using HospitalCore_core.Models;
+using Microsoft.EntityFrameworkCore;
+using HospitalCore_core.Services.Interfaces;
+using HospitalCore_core.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using HospitalCore_core.Context;
-using HospitalCore_core.DTO;
-using HospitalCore_core.Models;
-using HospitalCore_core.Context;
-using HospitalCore_core.Models;
-using HospitalCore_core.Utilities;
-using HospitalCore_core.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-
+using System.Threading.Tasks;
 
 namespace HospitalCore_core.Services
 {
     public class UsuarioService : IUsuarioService
     {
-        private readonly HospitalCore _context;
+        private readonly HospitalCore _dbContext;
 
-        public UsuarioService(HospitalCore context)
+        public UsuarioService(HospitalCore dbContext)
         {
-            _context = context;
+            _dbContext = dbContext;
         }
 
-        public UsuarioDTO GetUsuario(string codigoODocumento)
+        public async Task<UsuarioDto?> GetUsuarioByIdAsync(string usuariocodigoOCodigoDocumento)
         {
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.usuarioCodigo == codigoODocumento);
-            if (usuario == null) return null;
-
-            return new UsuarioDTO
+            try
             {
-                UsuarioCodigo = usuario.usuarioCodigo,
-                DocumentoUsuario = usuario.documentoUsuario,
-                UsuarioContra = usuario.usuarioContra
-            };
-        }
+                var usuario = await _dbContext.Usuarios
+                    .Where(e => e.UsuarioCodigo == usuariocodigoOCodigoDocumento || e.DocumentoUsuario == usuariocodigoOCodigoDocumento)
+                    .Include(e => e.PerfilUsuario)
+                    .FirstOrDefaultAsync();
 
-        public IEnumerable<UsuarioDTO> GetAllUsuarios()
-        {
-            return _context.Usuarios.Select(u => new UsuarioDTO
+                if (usuario == null) return null;
+
+                return UsuarioDto.FromModel(usuario);
+            }
+            catch (Exception ex)
             {
-                UsuarioCodigo = u.usuarioCodigo,
-                DocumentoUsuario = u.documentoUsuario,
-                UsuarioContra = u.usuarioContra
-            }).ToList();
+                // Handle exception (log it, rethrow it, etc.)
+                throw new Exception("Error retrieving user by ID.", ex);
+            }
         }
 
-        public void AddUsuario(UsuarioDTO usuarioDto)
+
+        public async Task<List<UsuarioDto>> GetUsuariosListAsync()
         {
-            var usuario = new Usuario
+            try
             {
-                usuarioCodigo = usuarioDto.UsuarioCodigo,
-                documentoUsuario = usuarioDto.DocumentoUsuario,
-                usuarioContra = usuarioDto.UsuarioContra
-            };
+                var usuarios = (await _dbContext.Usuarios
+                    .Include(e => e.PerfilUsuario)
+                    .ToListAsync())
+                    .Select(e => UsuarioDto.FromModel(e))
+                    .ToList();
 
-            _context.Usuarios.Add(usuario);
-            _context.SaveChanges();
-        }
-
-        public void UpdateUsuario(UsuarioDTO usuarioDto)
-        {
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.usuarioCodigo == usuarioDto.UsuarioCodigo);
-            if (usuario == null) return;
-
-            usuario.documentoUsuario = usuarioDto.DocumentoUsuario;
-            usuario.usuarioContra = usuarioDto.UsuarioContra;
-
-            _context.SaveChanges();
-        }
-
-        public void DeleteUsuario(string codigoODocumento)
-        {
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.usuarioCodigo == codigoODocumento);
-            if (usuario == null) return;
-
-            _context.Usuarios.Remove(usuario);
-            _context.SaveChanges();
-        }
-
-        public PerfilUsuarioDTO GetCuenta(string codigoODocumento)
-        {
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.usuarioCodigo == codigoODocumento);
-            if (usuario?.PerfilUsuario == null) return null;
-
-            var perfil = usuario.PerfilUsuario;
-            return new PerfilUsuarioDTO
+                return usuarios;
+            }
+            catch (Exception ex)
             {
-                CodigoDocumento = perfil.CodigoDocumento,
-                TipoDocumento = perfil.TipoDocumento,
-                NumLicenciaMedica = perfil.NumLicenciaMedica,
-                Nombre = perfil.Nombre,
-                Apellido = perfil.Apellido,
-                Genero = perfil.Genero,
-                FechaNacimiento = perfil.FechaNacimiento,
-                Telefono = perfil.Telefono,
-                Correo = perfil.Correo,
-                Direccion = perfil.Direccion,
-                Rol = perfil.Rol
-            };
+                // Handle exception (log it, rethrow it, etc.)
+                throw new Exception("Error retrieving users list.", ex);
+            }
         }
 
-        public void ToggleStateCuenta(string codigoODocumento)
+        public async Task<int> AddUsuarioAsync(UsuarioDto usuarioDto)
         {
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.usuarioCodigo == codigoODocumento);
-            if (usuario?.PerfilUsuario == null) return;
+            try
+            {
+                var perfilUsuario = PerfilUsuario.FromDto(usuarioDto);
+                var usuario = Usuario.FromDto(usuarioDto);
 
-            var perfil = usuario.PerfilUsuario;
-            // Implement logic to toggle state
-            // For example, assuming there's an "IsActive" property
-            // perfil.IsActive = !perfil.IsActive;
+                _dbContext.PerfilUsuarios.Add(perfilUsuario);
+                _dbContext.Usuarios.Add(usuario);
 
-            _context.SaveChanges();
+                await _dbContext.SaveChangesAsync();
+
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                
+                throw new Exception("Error adding user.", ex);
+            }
+        }
+
+        public async Task<int> UpdateUsuarioAsync(UsuarioDto usuarioDto)
+        {
+            try
+            {
+                var usuario = Usuario.FromDto(usuarioDto);
+                var perfilUsuario = PerfilUsuario.FromDto(usuarioDto);
+
+                _dbContext.PerfilUsuarios.Update(perfilUsuario);
+                usuario.PerfilUsuario = perfilUsuario;
+                _dbContext.Usuarios.Update(usuario);
+
+                await _dbContext.SaveChangesAsync();
+
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (log it, rethrow it, etc.)
+                throw new Exception("Error updating user.", ex);
+            }
+        }
+
+        public async Task<int> ToggleUsuarioCuentaAsync(string usuariocodigoOCodigoDocumento)
+        {
+            try
+            {
+                bool isUsuarioCodigo = await _dbContext.Usuarios.AnyAsync(u => u.UsuarioCodigo == usuariocodigoOCodigoDocumento);
+
+                CuentaCobrar? cuentaCobrarToUpdate;
+
+                if (isUsuarioCodigo)
+                {
+                    var codigoDocumento = await _dbContext.Usuarios
+                        .Where(u => u.UsuarioCodigo == usuariocodigoOCodigoDocumento)
+                        .Select(u => u.DocumentoUsuario)
+                        .FirstOrDefaultAsync();
+
+                    cuentaCobrarToUpdate = await _dbContext.CuentaCobrars
+                        .Include(c => c.CodigoPacienteNavigation)
+                        .FirstOrDefaultAsync(c => c.CodigoPacienteNavigation.CodigoDocumento == codigoDocumento);
+                }
+                else
+                {
+                    cuentaCobrarToUpdate = await _dbContext.CuentaCobrars
+                        .Include(c => c.CodigoPacienteNavigation)
+                        .FirstOrDefaultAsync(c => c.CodigoPacienteNavigation.CodigoDocumento == usuariocodigoOCodigoDocumento);
+                }
+
+                if (cuentaCobrarToUpdate != null)
+                {
+                    cuentaCobrarToUpdate.Estado = cuentaCobrarToUpdate.Estado == "A" ? "D" : "A";
+                    _dbContext.CuentaCobrars.Update(cuentaCobrarToUpdate);
+                    await _dbContext.SaveChangesAsync();
+
+                    return 1;
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (log it, rethrow it, etc.)
+                throw new Exception("Error toggling user account.", ex);
+            }
+        }
+
+        public async Task<int> DeleteUsuarioAsync(string usuariocodigoOCodigoDocumento)
+        {
+            try
+            {
+                var user = await _dbContext.Usuarios
+                    .Include(u => u.PerfilUsuario)
+                    .FirstOrDefaultAsync(u => u.UsuarioCodigo == usuariocodigoOCodigoDocumento || u.DocumentoUsuario == usuariocodigoOCodigoDocumento);
+
+                if (user != null)
+                {
+                    _dbContext.Usuarios.Remove(user);
+                    return await _dbContext.SaveChangesAsync();
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (log it, rethrow it, etc.)
+                throw new Exception("Error deleting user.", ex);
+            }
+        }
+
+        public async Task<CuentaCobrarDto?> GetCuentaByUsuarioCodigoOrDocumentoAsync(string usuariocodigoOCodigoDocumento)
+        {
+            try
+            {
+                bool isUsuarioCodigo = await _dbContext.Usuarios.AnyAsync(u => u.UsuarioCodigo == usuariocodigoOCodigoDocumento);
+
+                CuentaCobrar? cuenta;
+
+                if (isUsuarioCodigo)
+                {
+                    var codigoDocumento = await _dbContext.Usuarios
+                        .Where(u => u.UsuarioCodigo == usuariocodigoOCodigoDocumento)
+                        .Select(u => u.DocumentoUsuario)
+                        .FirstOrDefaultAsync();
+
+                    cuenta = await _dbContext.CuentaCobrars
+                        .Include(c => c.CodigoPacienteNavigation)
+                        .FirstOrDefaultAsync(c => c.CodigoPacienteNavigation.CodigoDocumento == codigoDocumento);
+                }
+                else
+                {
+                    cuenta = await _dbContext.CuentaCobrars
+                        .Include(c => c.CodigoPacienteNavigation)
+                        .FirstOrDefaultAsync(c => c.CodigoPacienteNavigation.CodigoDocumento == usuariocodigoOCodigoDocumento);
+                }
+
+                if (cuenta != null)
+                {
+                    return CuentaCobrarDto.FromModel(cuenta);
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (log it, rethrow it, etc.)
+                throw new Exception("Error retrieving account by user code or document.", ex);
+            }
         }
     }
 }

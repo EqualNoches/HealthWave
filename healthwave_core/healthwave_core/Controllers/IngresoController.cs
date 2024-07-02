@@ -128,17 +128,16 @@ namespace HospitalCore_core.Controllers
         }
 
         [HttpGet("{idIngreso}/afecciones")]
-        public async Task<ActionResult<List<Afeccion>>> GetIngresoAfecciones(int idIngreso)
+        public async Task<ActionResult<List<AfeccionDto>>> GetIngresoAfecciones(int idIngreso)
         {
-            try
+            var afecciones = await _ingresoService.GetIngresoAfeccionesAsync(idIngreso);
+
+            if (afecciones == null || afecciones.Count == 0)
             {
-                var afecciones = await _ingresoService.GetIngresoAfeccionesAsync(idIngreso);
-                return Ok(afecciones);
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+
+            return Ok(afecciones.Select(a => AfeccionDto.FromModel(a)).ToList());
         }
     }
 }

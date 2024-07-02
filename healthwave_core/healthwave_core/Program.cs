@@ -1,6 +1,7 @@
 using HospitalCore_core.Context;
 using HospitalCore_core.Services;
 using HospitalCore_core.Services.Interfaces;
+using HospitalCore_core.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HospitalCore_core;
@@ -28,7 +29,7 @@ public class Program
         // Add controllers
         services.AddControllers();
         
-        //Add DbContext
+        // Add DbContext
         services.AddDbContext<HospitalCore>(options =>
         {
             if (connectionString != null) options.UseSqlServer(connectionString);
@@ -36,7 +37,6 @@ public class Program
         });
         
         // Register services
-       
         services.AddScoped<ITipoServicioService, TipoServicioService>();
         services.AddScoped<IAseguradoraService, AseguradoraService>();
         services.AddScoped<ICuentaCobrarService, CuentaCobrarService>();
@@ -52,9 +52,10 @@ public class Program
         services.AddScoped<IUsuarioService, UsuarioService>();
         services.AddScoped<IConsultaService, ConsultaService>();
         services.AddScoped<IIngresoService, IngresoService>();
-        services.AddScoped<IConsultaService, ConsultaService>();
-        
-    
+
+     
+
+
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
     }

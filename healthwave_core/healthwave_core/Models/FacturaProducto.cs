@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using HospitalCore_core.DTO;
 
 namespace HospitalCore_core.Models;
 
@@ -20,4 +21,16 @@ public partial class FacturaProducto
     public virtual Autorizacion? IdautorizacionNavigation { get; set; }
 
     public virtual Producto IdproductoNavigation { get; set; } = null!;
+
+    public static FacturaProducto FromDto(FacturaProductoDto facturaProductoDto)
+    {
+        return new FacturaProducto
+        {
+            FacturaCodigo = facturaProductoDto.FacturaCodigo,
+            Idproducto = facturaProductoDto.Idproducto,
+            Idautorizacion = facturaProductoDto.Idautorizacion,
+            Precio = facturaProductoDto.Precio,
+            Cantidad = facturaProductoDto.Cantidad
+        };
+    }
 }

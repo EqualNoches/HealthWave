@@ -1,120 +1,70 @@
+using HospitalCore_core.DTO;
 using HospitalCore_core.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using HospitalCore_core.Utilities;
-using HospitalCore_core.Models;
+
 
 namespace HospitalCore_core.Controllers
-{ 
-    [Route("api/[controller]")]
+{
     [ApiController]
-    public class AutorizacionController(IAutorizacionService autorizacionService) : ControllerBase
+    [Route("api/[controller]")]
+    public class AutorizacionController : ControllerBase
     {
-        private readonly LogManager<AutorizacionController> _logManager = new();
+        private readonly IAutorizacionService _autorizacionService;
 
-        [HttpPost("Post")]
-        public async Task<IActionResult> PostAturización([FromQuery] Autorizacion autorizacion, int? idIngreso, string? consultaCodigo, string? facturaCodigo, string? servicioCodigo, int? idProducto){
-            try
-            {
-                if (autorizacion.Idautorizacion != 0)
-                {
-                    return BadRequest("El id de la autorización no puede ser incluido en el codigo");
-                }
-
-                var newAutorizacion =
-                    await autorizacionService.AddAutorizacion(autorizacion, idIngreso,consultaCodigo,facturaCodigo,servicioCodigo, idProducto);
-                if (newAutorizacion == 0)
-                {
-                    return Conflict();
-                }
-
-                return Ok(newAutorizacion);
-            }
-            catch (Exception exception)
-            {
-                _logManager.LogFatal("Error al crear autorización",exception);
-                throw;
-            }
-        }
-        
-        [HttpGet("Get")]
-        public async Task<ActionResult<IEnumerable<Autorizacion>>> GetAutorizaciones()
+        public AutorizacionController(IAutorizacionService autorizacionService)
         {
-            try
-            {
-                return await autorizacionService.GetAllAutorizaciones();
-            }
-            catch (Exception ex)
-            {
-                _logManager.LogFatal("Error obteniendo las autorizaciones", ex);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener las autorizaciones");
-            }
+            _autorizacionService = autorizacionService;
         }
 
-        [HttpGet("get/ID")]
-        public async Task<ActionResult<Autorizacion>> GetAutorizacionById(uint id)
+        [HttpPost]
+        public async Task<IActionResult> AddAutorizacion(AutorizacionDTO autorizacionDto, int? idIngreso, string? consultaCodigo, string? facturaCodigo, string? servicioCodigo, int? idProducto)
         {
-            try
+            var result = await _autorizacionService.AddAutorizacion(autorizacionDto, idIngreso, consultaCodigo, facturaCodigo, servicioCodigo, idProducto);
+            if (result == 0)
             {
-
-                var autorizacion = await autorizacionService.GetAutorizacionById((int)id);
-                if (autorizacion == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(autorizacion);
+                return BadRequest("Autorizacion no pudo ser creada");
             }
-            catch (Exception e)
-            {
-                _logManager.LogFatal($"Error al obtener Autorizacion especificada", e);
-                 return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener la autorización");
-            }
+            return Ok(result);
         }
 
-        [HttpPut("update")]
-        public async Task<ActionResult<int>> UpdateAutorizacion(Autorizacion autorizacion)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAutorizacion(int id)
         {
-            try
+            var result = await _autorizacionService.DeleteAutorizacionAsync(id);
+            if (result == 0)
             {
-                var result = await autorizacionService.UpdateAutorizacionAsync(autorizacion);
-                if (result == 0)
-                {
-                    return NotFound();
-                }
-
-                return result;
+                return NotFound("Autorizacion no encontrada");
             }
-            catch (Exception e)
-            {
-                _logManager.LogFatal("Error al actualizar Autorización", e);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar la autorización");
-            }
+            return Ok(result);
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<ActionResult<int>> DeleteAutorizacion(uint id)
+        [HttpGet]
+        public async Task<ActionResult<List<AutorizacionDTO>>> GetAllAutorizaciones()
         {
-            try
-            {
-                var result = await autorizacionService.DeleteAutorizacionAsync((int)id);
-                if (result == 0)
-                    
-                {
-                    
-                    
-                    return NotFound();
-                    
-                    
-                }
+            var autorizaciones = await _autorizacionService.GetAllAutorizaciones();
+            return Ok(autorizaciones);
+        }
 
-                return result;
-
-            }
-            catch (Exception ex)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AutorizacionDTO?>> GetAutorizacionById(int id)
+        {
+            var autorizacion = await _autorizacionService.GetAutorizacionById(id);
+            if (autorizacion == null)
             {
-                _logManager.LogFatal($"Error al tratar de eliminar la autorización{id}", ex);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error al eliminar la autorización");
+                return NotFound("Autorizacion no encontrada");
             }
+            return Ok(autorizacion);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateAutorizacion(AutorizacionDTO autorizacionDto)
+        {
+            var result = await _autorizacionService.UpdateAutorizacionAsync(autorizacionDto);
+            if (result == 0)
+            {
+                return NotFound("Autorizacion no encontrada");
+            }
+            return Ok(result);
         }
     }
 }

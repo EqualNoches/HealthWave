@@ -255,27 +255,29 @@ public partial class HospitalCore : DbContext
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.usuarioCodigo).HasName("PRIMARY");
+            entity.HasKey(e => e.UsuarioCodigo).HasName("PRIMARY");
 
             entity.ToTable("Usuario");
 
-            entity.HasIndex(e => e.documentoUsuario, "documentoUsuario").IsUnique();
+            entity.HasIndex(e => e.DocumentoUsuario, "documentoUsuario").IsUnique();
 
-            entity.Property(e => e.usuarioContra)
+            entity.Property(e => e.UsuarioCodigo)
                 .HasMaxLength(30)
                 .HasColumnName("usuarioCodigo");
-            entity.Property(e => e.documentoUsuario)
+
+            entity.Property(e => e.DocumentoUsuario)
                 .HasMaxLength(30)
                 .HasColumnName("documentoUsuario");
-            entity.Property(e => e.usuarioContra)
+
+            entity.Property(e => e.UsuarioContra)
                 .HasMaxLength(255)
                 .HasColumnName("usuarioContra");
 
-            entity.HasOne(u => u.PerfilUsuario)
-                .WithMany()
-                .HasForeignKey(u => u.documentoUsuario)
-                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(d => d.PerfilUsuario).WithOne(p => p.Usuario)
+                .HasForeignKey<Usuario>(d => d.DocumentoUsuario)
+                .HasConstraintName("Usuario_ibfk_1");
         });
+
 
 
 
@@ -467,42 +469,36 @@ public partial class HospitalCore : DbContext
 
             entity.Property(e => e.CodigoDocumento)
                 .HasMaxLength(30)
-                .HasColumnName("documento");
+                .HasColumnName("CodigoDocumento");
             entity.Property(e => e.Apellido)
                 .HasMaxLength(100)
-                .HasColumnName("apellido");
+                .HasColumnName("Apellido");
             entity.Property(e => e.Correo)
                 .HasMaxLength(255)
-                .HasColumnName("correo");
+                .HasColumnName("Correo");
             entity.Property(e => e.Direccion)
                 .HasMaxLength(255)
-                .HasColumnName("direccion");
+                .HasColumnName("Direccion");
             entity.Property(e => e.FechaNacimiento)
                 .HasColumnType("date")
-                .HasColumnName("fechaNacimiento");
+                .HasColumnName("FechaNacimiento");
             entity.Property(e => e.Genero)
                 .HasColumnType("enum('M','F')")
-                .HasColumnName("genero");
+                .HasColumnName("Genero");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(100)
-                .HasColumnName("nombre");
-            entity.Property(e => e.NumLicenciaMedica)
-                .HasColumnName("numLicenciaMedica");
+                .HasColumnName("Nombre");
+            entity.Property(e => e.NumLicenciaMedica).HasColumnName("NumLicenciaMedica");
             entity.Property(e => e.Rol)
                 .HasColumnType("enum('P','A','M','E','C')")
-                .HasColumnName("rol");
+                .HasColumnName("Rol");
             entity.Property(e => e.Telefono)
                 .HasMaxLength(18)
-                .HasColumnName("telefono");
+                .HasColumnName("Telefono");
             entity.Property(e => e.TipoDocumento)
                 .HasDefaultValueSql("'I'")
                 .HasColumnType("enum('I','P')")
-                .HasColumnName("tipoDocumento");
-
-            // Example of adding check constraint via raw SQL
-            entity.HasCheckConstraint("CK_PerfilUsuario_Genero", "[Genero]='F' OR [Genero]='M'");
-            entity.HasCheckConstraint("CK_PerfilUsuario_Rol", "[Rol]='C' OR [Rol]='E' OR [Rol]='M' OR [Rol]='A' OR [Rol]='P'");
-            entity.HasCheckConstraint("CK_PerfilUsuario_TipoDocumento", "[TipoDocumento]='P' OR [TipoDocumento]='I'");
+                .HasColumnName("TipoDocumento");
         });
 
 

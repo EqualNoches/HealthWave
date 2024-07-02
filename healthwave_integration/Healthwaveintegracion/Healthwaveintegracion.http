@@ -1,0 +1,11 @@
+@Healthwaveintegracion_HostAddress = http://localhost:5277
+
+GET {{Healthwaveintegracion_HostAddress}}/todos/
+Accept: application/json
+
+###
+
+GET {{Healthwaveintegracion_HostAddress}}/todos/1
+Accept: application/json
+
+###

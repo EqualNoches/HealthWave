@@ -17,7 +17,7 @@ namespace HospitalCore_core.Controllers
             _tipoServicioService = tipoServicioService;
         }
 
-        [HttpPost]
+        [HttpPost("post")]
         public async Task<IActionResult> AddTipoServicio([FromBody] TipoServicioDto tipoServicioDto)
         {
             if (tipoServicioDto == null)
@@ -34,14 +34,14 @@ namespace HospitalCore_core.Controllers
             return StatusCode(500, "Ocurrió un error al crear el tipo de servicio.");
         }
 
-        [HttpGet]
+        [HttpGet("get")]
         public async Task<IActionResult> GetTipoServicios()
         {
             var tipoServicios = await _tipoServicioService.GetTipoServiciosAsync();
             return Ok(tipoServicios);
         }
 
-        [HttpPut]
+        [HttpPut("update")]
         public async Task<IActionResult> UpdateTipoServicio([FromBody] TipoServicioDto tipoServicioDto)
         {
             if (tipoServicioDto == null)
@@ -63,7 +63,7 @@ namespace HospitalCore_core.Controllers
             return StatusCode(500, "Ocurrió un error al actualizar el tipo de servicio.");
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete{id}")]
         public async Task<IActionResult> DeleteTipoServicio(uint id)
         {
             var result = await _tipoServicioService.DeleteTipoServicioAsync(id);

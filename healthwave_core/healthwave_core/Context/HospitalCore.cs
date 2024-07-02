@@ -28,8 +28,7 @@ public partial class HospitalCore : DbContext
 
     public virtual DbSet<CuentaCobrar> CuentaCobrars { get; set; }
 
-
-
+    
     public virtual DbSet<Factura> Facturas { get; set; }
 
     public virtual DbSet<FacturaProducto> FacturaProductos { get; set; }
@@ -331,11 +330,11 @@ public partial class HospitalCore : DbContext
 
         modelBuilder.Entity<FacturaProducto>(entity =>
         {
-            entity.HasKey(e => new { e.FacturaCodigo, e.Idproducto }).HasName("PK__FacturaP__64C0DE590F3AD90C");
+            entity.HasKey(e => new { e.FacturaCodigoProducto, e.Idproducto }).HasName("PK__FacturaP__64C0DE590F3AD90C");
 
             entity.ToTable("FacturaProducto");
 
-            entity.Property(e => e.FacturaCodigo)
+            entity.Property(e => e.FacturaCodigoProducto)
                 .HasMaxLength(30)
                 .IsUnicode(false);
             entity.Property(e => e.Idproducto).HasColumnName("IDProducto");
@@ -345,7 +344,7 @@ public partial class HospitalCore : DbContext
                 .HasColumnType("decimal(10, 2)");
 
             entity.HasOne(d => d.FacturaCodigoNavigation).WithMany(p => p.FacturaProductos)
-                .HasForeignKey(d => d.FacturaCodigo)
+                .HasForeignKey(d => d.FacturaCodigoProducto)
                 .HasConstraintName("FK__FacturaPr__Factu__7FD5EEA5");
 
             entity.HasOne(d => d.IdautorizacionNavigation).WithMany(p => p.FacturaProductos)
@@ -360,11 +359,11 @@ public partial class HospitalCore : DbContext
 
         modelBuilder.Entity<FacturaServicio>(entity =>
         {
-            entity.HasKey(e => new { e.FacturaCodigo, e.Idproducto }).HasName("PK__FacturaS__64C0DE5954B74F27");
+            entity.HasKey(e => new { e.FacturaCodigoServicio, e.Idproducto }).HasName("PK__FacturaS__64C0DE5954B74F27");
 
             entity.ToTable("FacturaServicio");
 
-            entity.Property(e => e.FacturaCodigo)
+            entity.Property(e => e.FacturaCodigoServicio)
                 .HasMaxLength(30)
                 .IsUnicode(false);
             entity.Property(e => e.Idproducto).HasColumnName("IDProducto");
@@ -377,7 +376,7 @@ public partial class HospitalCore : DbContext
                 .IsUnicode(false);
 
             entity.HasOne(d => d.FacturaCodigoNavigation).WithMany(p => p.FacturaServicios)
-                .HasForeignKey(d => d.FacturaCodigo)
+                .HasForeignKey(d => d.FacturaCodigoServicio)
                 .HasConstraintName("FK__FacturaSe__Factu__670A40DB");
 
             entity.HasOne(d => d.IdautorizacionNavigation).WithMany(p => p.FacturaServicios)

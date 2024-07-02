@@ -10,7 +10,7 @@ namespace HospitalCore_core.Controllers;
 public class AseguradoraController(IAseguradoraService aseguradoraService) : ControllerBase
 {
     private readonly LogManager<AseguradoraController> _logHandler = new();
-    
+
 
     [HttpPost("post")]
     public async Task<ActionResult<int>> PostAseguradora(Aseguradora aseguradora)
@@ -32,7 +32,7 @@ public class AseguradoraController(IAseguradoraService aseguradoraService) : Con
         }
         catch (Exception ex)
         {
-            _logHandler.LogFatal("Error al crear la aseguradora",ex);
+            _logHandler.LogFatal("Error al crear la aseguradora", ex);
             return StatusCode(StatusCodes.Status500InternalServerError, "Error al crear la aseguradora");
         }
     }
@@ -44,7 +44,8 @@ public class AseguradoraController(IAseguradoraService aseguradoraService) : Con
         {
             return await aseguradoraService.GetAllAseguradoras();
 
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logHandler.LogFatal("Error al obtener las aseguradoras", ex);
             return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener las aseguradoras");
@@ -61,11 +62,12 @@ public class AseguradoraController(IAseguradoraService aseguradoraService) : Con
             {
                 return NotFound();
             }
+
             return Ok(aseguradora);
         }
         catch (Exception ex)
         {
-            _logHandler.LogFatal($"Error al obtener la aseguradora con ID {id}",ex);
+            _logHandler.LogFatal($"Error al obtener la aseguradora con ID {id}", ex);
             return StatusCode(StatusCodes.Status500InternalServerError, "Error al obtener la aseguradora");
         }
     }
@@ -80,11 +82,12 @@ public class AseguradoraController(IAseguradoraService aseguradoraService) : Con
             {
                 return NotFound();
             }
+
             return result;
         }
         catch (Exception ex)
         {
-            _logHandler.LogFatal("Error al actualizar aseguradora",ex);
+            _logHandler.LogFatal("Error al actualizar aseguradora", ex);
             return StatusCode(StatusCodes.Status500InternalServerError, "Error al actualizar la aseguradora");
         }
     }
@@ -99,11 +102,12 @@ public class AseguradoraController(IAseguradoraService aseguradoraService) : Con
             {
                 return NotFound();
             }
+
             return result;
         }
         catch (Exception ex)
         {
-            _logHandler.LogFatal( $"Error al eliminar la aseguradora con ID {id}",ex);
+            _logHandler.LogFatal($"Error al eliminar la aseguradora con ID {id}", ex);
             return StatusCode(StatusCodes.Status500InternalServerError, "Error al eliminar la aseguradora");
         }
     }

@@ -13,7 +13,7 @@ public class PagoController(IPagoService pagoService) : ControllerBase
     private readonly LogManager<PagoController> _logManager = new();
 
 
-    [HttpPost("post")]
+    [HttpPost("add")]
     public async Task<ActionResult> PostPago(PagoDto pago)
     {
         try

@@ -16,7 +16,7 @@ namespace HospitalCore_core.Controllers
             _metodoDePagoService = metodoDePagoService;
         }
 
-        [HttpPost("add")]
+        [HttpPost("ADD")]
         public IActionResult AddMetodoDePago([FromBody] MetodoDePagoDto metodoDePagoDto)
         {
             var metodoDePago = new MetodoDePago
@@ -29,7 +29,7 @@ namespace HospitalCore_core.Controllers
             return Ok("MetodoDePago added successfully.");
         }
 
-        [HttpGet("get")]
+        [HttpGet("GET")]
         public ActionResult<List<MetodoDePagoDto>> GetAllMetodosDePago()
         {
             var metodosDePago = _metodoDePagoService.GetAllMetodosDePago()

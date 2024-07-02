@@ -4,7 +4,7 @@ namespace HospitalCore_core.Models;
 
 public partial class FacturaServicio
 {
-    public string FacturaCodigo { get; set; } = null!;
+    public string FacturaCodigoServicio { get; set; } = null!;
 
     public int Idproducto { get; set; }
 
@@ -24,7 +24,7 @@ public partial class FacturaServicio
     {
         return new FacturaServicio
         {
-            FacturaCodigo = facturaServicioDto.FacturaCodigo,
+            FacturaCodigoServicio = facturaServicioDto.FacturaCodigoServicio,
             Idproducto = facturaServicioDto.Idproducto,
             Idautorizacion = facturaServicioDto.Idautorizacion,
             Costo = facturaServicioDto.Costo,

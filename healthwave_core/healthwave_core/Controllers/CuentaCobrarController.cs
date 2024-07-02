@@ -16,14 +16,14 @@ namespace HospitalCore_core.Controllers
             _cuentaCobrarService = cuentaCobrarService;
         }
 
-        [HttpGet]
+        [HttpGet("Get")]
         public async Task<ActionResult<IEnumerable<CuentaCobrarDto>>> GetCuentasCobrar()
         {
             var cuentas = await _cuentaCobrarService.GetCuentasCobrar();
             return Ok(cuentas);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("Get{id}")]
         public async Task<ActionResult<CuentaCobrarDto>> GetCuentaCobrar(int id)
         {
             var cuenta = await _cuentaCobrarService.GetCuentaCobrarById(id);
@@ -34,14 +34,14 @@ namespace HospitalCore_core.Controllers
             return Ok(cuenta);
         }
 
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<ActionResult<CuentaCobrarDto>> CreateCuentaCobrar(CuentaCobrarDto cuentaCobrarDto)
         {
             var createdCuenta = await _cuentaCobrarService.CreateCuentaCobrar(cuentaCobrarDto);
             return CreatedAtAction(nameof(GetCuentaCobrar), new { id = createdCuenta.Idcuenta }, createdCuenta);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Update{id}")]
         public async Task<ActionResult<CuentaCobrarDto>> UpdateCuentaCobrar(int id, CuentaCobrarDto cuentaCobrarDto)
         {
             var updatedCuenta = await _cuentaCobrarService.UpdateCuentaCobrar(id, cuentaCobrarDto);
@@ -52,7 +52,7 @@ namespace HospitalCore_core.Controllers
             return Ok(updatedCuenta);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete{id}")]
         public async Task<ActionResult> DeleteCuentaCobrar(int id)
         {
             var deleted = await _cuentaCobrarService.DeleteCuentaCobrar(id);

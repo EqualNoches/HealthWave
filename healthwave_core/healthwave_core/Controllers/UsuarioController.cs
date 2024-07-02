@@ -18,7 +18,7 @@ namespace HospitalCore_core.Controllers
             _usuarioService = usuarioService;
         }
 
-        [HttpGet("{usuariocodigoOCodigoDocumento}")]
+        [HttpGet("get{usuariocodigoOCodigoDocumento}")]
         public async Task<IActionResult> GetUsuarioById(string usuariocodigoOCodigoDocumento)
         {
             try
@@ -34,33 +34,33 @@ namespace HospitalCore_core.Controllers
             }
             catch (Exception ex)
             {
-                // Handle exception (log it, return error response, etc.)
+              
                 return StatusCode(500, $"Error retrieving user: {ex.Message}");
             }
         }
 
-        [HttpGet]
+        [HttpGet("get")]
         public async Task<ActionResult<IEnumerable<UsuarioDto>>> GetUsuariosList()
         {
             var usuarios = await _usuarioService.GetUsuariosListAsync();
             return Ok(usuarios);
         }
 
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<ActionResult<int>> AddUsuario(UsuarioDto usuarioDto)
         {
             var result = await _usuarioService.AddUsuarioAsync(usuarioDto);
             return Ok(result);
         }
 
-        [HttpPut]
+        [HttpPut("Update")]
         public async Task<ActionResult<int>> UpdateUsuario(UsuarioDto usuarioDto)
         {
             var result = await _usuarioService.UpdateUsuarioAsync(usuarioDto);
             return Ok(result);
         }
 
-        [HttpDelete("{codigoOCodigoDocumento}")]
+        [HttpDelete("Delete{codigoOCodigoDocumento}")]
         public async Task<ActionResult<int>> DeleteUsuario(string codigoOCodigoDocumento)
         {
             var result = await _usuarioService.DeleteUsuarioAsync(codigoOCodigoDocumento);
@@ -72,7 +72,7 @@ namespace HospitalCore_core.Controllers
             return Ok(result);
         }
 
-        [HttpPut("toggle-cuenta/{usuariocodigoOCodigoDocumento}")]
+        [HttpPut("Upadate/{usuariocodigoOCodigoDocumento}")]
         public async Task<IActionResult> ToggleCuenta(string usuariocodigoOCodigoDocumento)
         {
             try
@@ -93,7 +93,7 @@ namespace HospitalCore_core.Controllers
             }
         }
 
-        [HttpGet("GetCuentaByUsuarioCodigoOrDocumento/{codigoOCodigoDocumento}")]
+        [HttpGet("Get/{codigoOCodigoDocumento}")]
         public async Task<ActionResult<CuentaCobrarDto>> GetCuentaByUsuarioCodigoOrDocumento(string codigoOCodigoDocumento)
         {
             var cuenta = await _usuarioService.GetCuentaByUsuarioCodigoOrDocumentoAsync(codigoOCodigoDocumento);

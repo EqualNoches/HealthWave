@@ -10,13 +10,13 @@ namespace HospitalCore_core.Services.Interfaces
         Task<int> DeleteFacturaAsync(string FacturaCodigo);
         Task<IEnumerable<FacturaDto>> GetFacturasAsync();
         Task<int> AddFacturaServicioAsync(FacturaServicioDto facturaServicioDto);
-        Task<int> DeleteFacturaServicioAsync(string FacturaCodigo, string ServicioCodigo);
-        Task<IEnumerable<FacturaServicioDto>> GetFacturaServiciosAsync(string FacturaCodigo);
+        Task<int> DeleteFacturaServicioAsync(string facturaServicioDto, string ServicioCodigo);
+        Task<IEnumerable<FacturaServicioDto>> GetFacturaServiciosAsync(string facturaServicioDto);
         Task<int> AddFacturaProductoAsync(FacturaProductoDto facturaProductoDto);
-        Task<int> DeleteFacturaProductoAsync(string FacturaCodigo, int Idproducto);
-        Task<IEnumerable<FacturaProductoDto>> GetFacturaProductosAsync(string FacturaCodigo);
+        Task<int> DeleteFacturaProductoAsync(string FacturaCodigoProducto, int Idproducto);
+        Task<IEnumerable<FacturaProductoDto>> GetFacturaProductosAsync(string FacturaCodigoProducto);
         Task<int> AddFacturaMetodoPagoAsync(string FacturaCodigo, int CodigoMetodoDePago);
         Task<int> DeleteFacturaMetodoPagoAsync(string FacturaCodigo, int CodigoMetodoDePago);
-        Task<IEnumerable<MetodoDePago>> GetMetodoPagosAsync(string FacturaCodigo);
+        Task<IEnumerable<MetodoDePagoDto>> GetMetodoPagosAsync(string facturaCodigo);
     }
 }

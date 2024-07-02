@@ -95,7 +95,7 @@ namespace HospitalCore_core.Controllers
             }
         }
 
-        [HttpPost("{idIngreso}/afecciones/{idAfeccion}/add")]
+        [HttpPost("ADD{idIngreso}/afecciones/{idAfeccion}/add")]
         public async Task<IActionResult> AddIngresoAfeccion(int idIngreso, int idAfeccion)
         {
             try
@@ -111,7 +111,7 @@ namespace HospitalCore_core.Controllers
             }
         }
 
-        [HttpDelete("{idIngreso}/afecciones/{idAfeccion}/remove")]
+        [HttpDelete("DELETE {idIngreso}/afecciones/{idAfeccion}/remove")]
         public async Task<IActionResult> RemoveIngresoAfeccion(int idIngreso, int idAfeccion)
         {
             try
@@ -127,7 +127,7 @@ namespace HospitalCore_core.Controllers
             }
         }
 
-        [HttpGet("{idIngreso}/afecciones")]
+        [HttpGet("GET{idIngreso}/afecciones")]
         public async Task<ActionResult<List<AfeccionDto>>> GetIngresoAfecciones(int idIngreso)
         {
             var afecciones = await _ingresoService.GetIngresoAfeccionesAsync(idIngreso);

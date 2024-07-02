@@ -16,14 +16,14 @@ namespace HospitalCore_core.Controllers
             _afeccionService = afeccionService;
         }
 
-        [HttpGet]
+        [HttpGet ("Get")]
         public async Task<ActionResult<IEnumerable<AfeccionDto>>> GetAfecciones()
         {
             var afecciones = await _afeccionService.GetAfecciones();
             return Ok(afecciones);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("Get{id}")]
         public async Task<ActionResult<AfeccionDto>> GetAfeccion(int id)
         {
             var afeccion = await _afeccionService.GetAfeccionById(id);
@@ -34,14 +34,14 @@ namespace HospitalCore_core.Controllers
             return Ok(afeccion);
         }
 
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<ActionResult<AfeccionDto>> CreateAfeccion(AfeccionDto afeccionDto)
         {
             var createdAfeccion = await _afeccionService.CreateAfeccion(afeccionDto);
             return CreatedAtAction(nameof(GetAfeccion), new { id = createdAfeccion.IdAfeccion }, createdAfeccion);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("Update{id}")]
         public async Task<ActionResult<AfeccionDto>> UpdateAfeccion(int id, AfeccionDto afeccionDto)
         {
             var updatedAfeccion = await _afeccionService.UpdateAfeccion(id, afeccionDto);
@@ -52,7 +52,7 @@ namespace HospitalCore_core.Controllers
             return Ok(updatedAfeccion);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete{id}")]
         public async Task<ActionResult> DeleteAfeccion(int id)
         {
             var deleted = await _afeccionService.DeleteAfeccion(id);

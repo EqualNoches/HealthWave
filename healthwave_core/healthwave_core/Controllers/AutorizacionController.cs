@@ -2,7 +2,6 @@ using HospitalCore_core.DTO;
 using HospitalCore_core.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace HospitalCore_core.Controllers
 {
     [ApiController]
@@ -16,7 +15,7 @@ namespace HospitalCore_core.Controllers
             _autorizacionService = autorizacionService;
         }
 
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<IActionResult> AddAutorizacion(AutorizacionDTO autorizacionDto, int? idIngreso, string? consultaCodigo, string? facturaCodigo, string? servicioCodigo, int? idProducto)
         {
             var result = await _autorizacionService.AddAutorizacion(autorizacionDto, idIngreso, consultaCodigo, facturaCodigo, servicioCodigo, idProducto);
@@ -27,7 +26,7 @@ namespace HospitalCore_core.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> DeleteAutorizacion(int id)
         {
             var result = await _autorizacionService.DeleteAutorizacionAsync(id);
@@ -38,14 +37,14 @@ namespace HospitalCore_core.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<List<AutorizacionDTO>>> GetAllAutorizaciones()
         {
             var autorizaciones = await _autorizacionService.GetAllAutorizaciones();
             return Ok(autorizaciones);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         public async Task<ActionResult<AutorizacionDTO?>> GetAutorizacionById(int id)
         {
             var autorizacion = await _autorizacionService.GetAutorizacionById(id);
@@ -56,7 +55,7 @@ namespace HospitalCore_core.Controllers
             return Ok(autorizacion);
         }
 
-        [HttpPut]
+        [HttpPut("Update")]
         public async Task<IActionResult> UpdateAutorizacion(AutorizacionDTO autorizacionDto)
         {
             var result = await _autorizacionService.UpdateAutorizacionAsync(autorizacionDto);

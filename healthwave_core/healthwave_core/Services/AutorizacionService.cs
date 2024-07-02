@@ -55,7 +55,7 @@ namespace HospitalCore_core.Services
 
                 if (!string.IsNullOrEmpty(servicioCodigo) && !string.IsNullOrEmpty(facturaCodigo))
                 {
-                    var facturaServicios = await dbContext.FacturaServicios.SingleOrDefaultAsync(fS => fS.ServicioCodigo == servicioCodigo && fS.FacturaCodigo == facturaCodigo);
+                    var facturaServicios = await dbContext.FacturaServicios.SingleOrDefaultAsync(fS => fS.ServicioCodigo == servicioCodigo && fS.FacturaCodigoServicio == facturaCodigo);
                     if (facturaServicios == null)
                         throw new InvalidOperationException("El servicio proporcionado no existe");
 
@@ -65,7 +65,7 @@ namespace HospitalCore_core.Services
 
                 if (idProducto != null && !string.IsNullOrEmpty(facturaCodigo))
                 {
-                    var facturaProducto = await dbContext.FacturaProductos.SingleOrDefaultAsync(fp => fp.Idproducto == idProducto && fp.FacturaCodigo == facturaCodigo);
+                    var facturaProducto = await dbContext.FacturaProductos.SingleOrDefaultAsync(fp => fp.Idproducto == idProducto && fp.FacturaCodigoProducto == facturaCodigo);
                     if (facturaProducto == null)
                         throw new ArgumentException("El producto facturado provisto no existe");
 

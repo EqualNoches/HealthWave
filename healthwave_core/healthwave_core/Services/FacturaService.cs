@@ -1,251 +1,151 @@
-using HospitalCore_core.Models;
-using HospitalCore_core.DTO;
-using HospitalCore_core.Services.Interfaces;
-using HospitalCore_core.Utilities;
-using Microsoft.EntityFrameworkCore;
 using HospitalCore_core.Context;
-
+using HospitalCore_core.DTO;
+using HospitalCore_core.Models;
+using HospitalCore_core.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace HospitalCore_core.Services
 {
     public class FacturaService : IFacturaService
     {
-        private readonly HospitalCore _dbContext;
-        private readonly LogManager<FacturaService> _logManager = new();
+        private readonly HospitalCore _context;
 
-        public FacturaService(HospitalCore dbContext)
+        public FacturaService(HospitalCore context)
         {
-            _dbContext = dbContext;
+            _context = context;
         }
 
         public async Task<int> AddFacturaAsync(FacturaDto facturaDto)
         {
-            try
-            {
-                var factura = Factura.FromDto(facturaDto);
-                _dbContext.Facturas.Add(factura);
-                return await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logManager.LogError("Something went wrong while creating a Factura.", ex);
-                throw;
-            }
+            var factura = Factura.FromDto(facturaDto);
+            _context.Facturas.Add(factura);
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<int> UpdateFacturaAsync(FacturaDto facturaDto)
         {
-            try
-            {
-                var factura = await _dbContext.Facturas.FindAsync(facturaDto.FacturaCodigo);
-                if (factura == null)
-                    throw new KeyNotFoundException("Factura not found");
+            var factura = await _context.Facturas.FindAsync(facturaDto.FacturaCodigo);
+            if (factura == null) return 0;
 
-                factura.MontoTotal = facturaDto.MontoTotal;
-                factura.MontoSubtotal = facturaDto.MontoSubtotal;
-                factura.Fecha = facturaDto.Fecha;
-                factura.Rnc = facturaDto.Rnc;
-                factura.CodigoMetodoDePago = facturaDto.CodigoMetodoDePago;
-                factura.CodigoPaciente = facturaDto.CodigoPaciente;
-                factura.Idingreso = facturaDto.Idingreso;
-                factura.Idcuenta = facturaDto.Idcuenta;
-                factura.ConsultaCodigo = facturaDto.ConsultaCodigo;
+            factura.MontoTotal = facturaDto.MontoTotal;
+            factura.MontoSubtotal = facturaDto.MontoSubtotal;
+            factura.Fecha = facturaDto.Fecha;
+            factura.Rnc = facturaDto.Rnc;
+            factura.CodigoMetodoDePago = facturaDto.CodigoMetodoDePago;
+            factura.CodigoPaciente = facturaDto.CodigoPaciente;
+            factura.Idingreso = facturaDto.Idingreso;
+            factura.Idcuenta = facturaDto.Idcuenta;
+            factura.ConsultaCodigo = facturaDto.ConsultaCodigo;
 
-                _dbContext.Facturas.Update(factura);
-                return await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logManager.LogError("Something went wrong while updating the Factura.", ex);
-                throw;
-            }
+            return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteFacturaAsync(string FacturaCodigo)
+        public async Task<int> DeleteFacturaAsync(string facturaCodigo)
         {
-            try
-            {
-                var factura = await _dbContext.Facturas.FindAsync(FacturaCodigo);
-                if (factura == null)
-                    throw new KeyNotFoundException("Factura not found");
+            var factura = await _context.Facturas.FindAsync(facturaCodigo);
+            if (factura == null) return 0;
 
-                _dbContext.Facturas.Remove(factura);
-                return await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logManager.LogError("Something went wrong while deleting the Factura.", ex);
-                throw;
-            }
+            _context.Facturas.Remove(factura);
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<FacturaDto>> GetFacturasAsync()
         {
-            try
-            {
-                var facturas = await _dbContext.Facturas.ToListAsync();
-                return facturas.Select(factura => FacturaDto.FromModel(factura));
-            }
-            catch (Exception ex)
-            {
-                _logManager.LogError("Something went wrong while retrieving Facturas.", ex);
-                throw;
-            }
+            return await _context.Facturas
+                .Select(f => FacturaDto.FromModel(f))
+                .ToListAsync();
         }
 
         public async Task<int> AddFacturaServicioAsync(FacturaServicioDto facturaServicioDto)
         {
-            try
-            {
-                var facturaServicio = FacturaServicio.FromDto(facturaServicioDto);
-                _dbContext.FacturaServicios.Add(facturaServicio);
-                return await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logManager.LogError("Something went wrong while creating a FacturaServicio.", ex);
-                throw;
-            }
+            var facturaServicio = FacturaServicio.FromDto(facturaServicioDto);
+            _context.FacturaServicios.Add(facturaServicio);
+            return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteFacturaServicioAsync(string FacturaCodigo, string ServicioCodigo)
+        public async Task<int> DeleteFacturaServicioAsync(string facturaCodigo, string servicioCodigo)
         {
-            try
-            {
-                var facturaServicio = await _dbContext.FacturaServicios
-                    .FirstOrDefaultAsync(fs => fs.FacturaCodigo == FacturaCodigo && fs.ServicioCodigo == ServicioCodigo);
-                if (facturaServicio == null)
-                    throw new KeyNotFoundException("FacturaServicio not found");
+            var facturaServicio = await _context.FacturaServicios
+                .FirstOrDefaultAsync(fs => fs.FacturaCodigoServicio == facturaCodigo && fs.ServicioCodigo == servicioCodigo);
+            if (facturaServicio == null) return 0;
 
-                _dbContext.FacturaServicios.Remove(facturaServicio);
-                return await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logManager.LogError("Something went wrong while deleting the FacturaServicio.", ex);
-                throw;
-            }
+            _context.FacturaServicios.Remove(facturaServicio);
+            return await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<FacturaServicioDto>> GetFacturaServiciosAsync(string FacturaCodigo)
+        public async Task<IEnumerable<FacturaServicioDto>> GetFacturaServiciosAsync(string facturaCodigo)
         {
-            try
-            {
-                var facturaServicios = await _dbContext.FacturaServicios
-                    .Where(fs => fs.FacturaCodigo == FacturaCodigo)
-                    .ToListAsync();
-                return facturaServicios.Select(facturaServicio => FacturaServicioDto.FromModel(facturaServicio));
-            }
-            catch (Exception ex)
-            {
-                _logManager.LogError("Something went wrong while retrieving FacturaServicios.", ex);
-                throw;
-            }
+            return await _context.FacturaServicios
+                .Where(fs => fs.FacturaCodigoNavigation.FacturaCodigo == facturaCodigo)
+                .Select(fs => FacturaServicioDto.FromModel(fs))
+                .ToListAsync();
         }
 
         public async Task<int> AddFacturaProductoAsync(FacturaProductoDto facturaProductoDto)
         {
-            try
-            {
-                var facturaProducto = FacturaProducto.FromDto(facturaProductoDto);
-                _dbContext.FacturaProductos.Add(facturaProducto);
-                return await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logManager.LogError("Something went wrong while creating a FacturaProducto.", ex);
-                throw;
-            }
+            var facturaProducto = FacturaProducto.FromDto(facturaProductoDto);
+            _context.FacturaProductos.Add(facturaProducto);
+            return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteFacturaProductoAsync(string FacturaCodigo, int Idproducto)
+        public async Task<int> DeleteFacturaProductoAsync(string facturaCodigoProducto, int idProducto)
         {
-            try
-            {
-                var facturaProducto = await _dbContext.FacturaProductos
-                    .FirstOrDefaultAsync(fp => fp.FacturaCodigo == FacturaCodigo && fp.Idproducto == Idproducto);
-                if (facturaProducto == null)
-                    throw new KeyNotFoundException("FacturaProducto not found");
+            var facturaProducto = await _context.FacturaProductos
+                .FirstOrDefaultAsync(fp => fp.FacturaCodigoProducto == facturaCodigoProducto && fp.Idproducto == idProducto);
+            if (facturaProducto == null) return 0;
 
-                _dbContext.FacturaProductos.Remove(facturaProducto);
-                return await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logManager.LogError("Something went wrong while deleting the FacturaProducto.", ex);
-                throw;
-            }
+            _context.FacturaProductos.Remove(facturaProducto);
+            return await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<FacturaProductoDto>> GetFacturaProductosAsync(string FacturaCodigo)
+        public async Task<IEnumerable<FacturaProductoDto>> GetFacturaProductosAsync(string facturaCodigoProducto)
         {
-            try
-            {
-                var facturaProductos = await _dbContext.FacturaProductos
-                    .Where(fp => fp.FacturaCodigo == FacturaCodigo)
-                    .ToListAsync();
-                return facturaProductos.Select(facturaProducto => FacturaProductoDto.FromModel(facturaProducto));
-            }
-            catch (Exception ex)
-            {
-                _logManager.LogError("Something went wrong while retrieving FacturaProductos.", ex);
-                throw;
-            }
+            return await _context.FacturaProductos
+                .Where(fp => fp.FacturaCodigoProducto == facturaCodigoProducto)
+                .Select(fp => FacturaProductoDto.FromModel(fp))
+                .ToListAsync();
         }
 
-        public async Task<int> AddFacturaMetodoPagoAsync(string FacturaCodigo, int CodigoMetodoDePago)
+        public async Task<int> AddFacturaMetodoPagoAsync(string facturaCodigo, int codigoMetodoDePago)
         {
-            try
-            {
-                var factura = await _dbContext.Facturas.FindAsync(FacturaCodigo);
-                if (factura == null)
-                    throw new KeyNotFoundException("Factura not found");
+            var factura = await _context.Facturas.FindAsync(facturaCodigo);
+            if (factura == null) return 0;
 
-                factura.CodigoMetodoDePago = CodigoMetodoDePago;
-                return await _dbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logManager.LogError("Something went wrong while adding MetodoDePago to Factura.", ex);
-                throw;
-            }
+            var metodoDePago = await _context.MetodosDePago.FindAsync(codigoMetodoDePago);
+            if (metodoDePago == null) return 0;
+
+            factura.CodigoMetodoDePago = codigoMetodoDePago;
+            return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteFacturaMetodoPagoAsync(string FacturaCodigo, int CodigoMetodoDePago)
+        public async Task<int> DeleteFacturaMetodoPagoAsync(string facturaCodigo, int codigoMetodoDePago)
         {
-            try
-            {
-                var factura = await _dbContext.Facturas.FindAsync(FacturaCodigo);
-                if (factura == null)
-                    throw new KeyNotFoundException("Factura not found");
+            var factura = await _context.Facturas.FindAsync(facturaCodigo);
+            if (factura == null) return 0;
 
+            if (factura.CodigoMetodoDePago == codigoMetodoDePago)
+            {
                 factura.CodigoMetodoDePago = null;
-                return await _dbContext.SaveChangesAsync();
             }
-            catch (Exception ex)
-            {
-                _logManager.LogError("Something went wrong while deleting MetodoDePago from Factura.", ex);
-                throw;
-            }
+
+            return await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<MetodoDePago>> GetMetodoPagosAsync(string FacturaCodigo)
+        public async Task<IEnumerable<MetodoDePagoDto>> GetMetodoPagosAsync(string facturaCodigo)
         {
-            try
-            {
-                var factura = await _dbContext.Facturas
-                    .Include(f => f.CodigoMetodoDePagoNavigation)
-                    .FirstOrDefaultAsync(f => f.FacturaCodigo == FacturaCodigo);
-                if (factura == null)
-                    throw new KeyNotFoundException("Factura not found");
+            var factura = await _context.Facturas
+                .Include(f => f.CodigoMetodoDePagoNavigation)
+                .FirstOrDefaultAsync(f => f.FacturaCodigo == facturaCodigo);
 
-                return factura.CodigoMetodoDePagoNavigation != null ? new List<MetodoDePago> { factura.CodigoMetodoDePagoNavigation } : new List<MetodoDePago>();
-            }
-            catch (Exception ex)
+            if (factura == null || factura.CodigoMetodoDePagoNavigation == null)
             {
-                _logManager.LogError("Something went wrong while retrieving MetodoDePagos from Factura.", ex);
-                throw;
+                return Enumerable.Empty<MetodoDePagoDto>();
             }
+
+            return new List<MetodoDePagoDto>
+            {
+                MetodoDePagoDto.FromModel(factura.CodigoMetodoDePagoNavigation)
+            };
         }
     }
 }

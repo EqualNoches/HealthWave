@@ -4,7 +4,7 @@ namespace HospitalCore_core.DTO;
 
 public class FacturaProductoDto
 {
-    public string FacturaCodigo { get; set; } = null!;
+    public string FacturaCodigoProducto { get; set; } = null!;
 
     public int Idproducto { get; set; }
 
@@ -18,7 +18,7 @@ public class FacturaProductoDto
     {
         return new FacturaProductoDto
         {
-            FacturaCodigo = facturaProducto.FacturaCodigo,
+            FacturaCodigoProducto = facturaProducto.FacturaCodigoProducto,
             Idproducto = facturaProducto.Idproducto,
             Idautorizacion = facturaProducto.Idautorizacion,
             Precio = facturaProducto.Precio,

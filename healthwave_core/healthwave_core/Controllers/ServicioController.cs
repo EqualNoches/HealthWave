@@ -15,14 +15,14 @@ public class ServiciosController : ControllerBase
         _servicioService = servicioService;
     }
 
-    [HttpGet]
+    [HttpGet("get")]
     public async Task<ActionResult<IEnumerable<ServicioDto>>> GetServicios()
     {
         var servicios = await _servicioService.GetAllServicios();
         return Ok(servicios);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("get{id}")]
     public async Task<ActionResult<ServicioDto>> GetServicio(int id)
     {
         var servicio = await _servicioService.GetServicioById(id);
@@ -35,14 +35,14 @@ public class ServiciosController : ControllerBase
         return Ok(servicio);
     }
 
-    [HttpPost]
+    [HttpPost("post")]
     public async Task<ActionResult<ServicioDto>> PostServicio(ServicioDto servicioDto)
     {
         var createdServicio = await _servicioService.CreateServicio(servicioDto);
         return CreatedAtAction(nameof(GetServicio), new { id = createdServicio.ServicioCodigo }, createdServicio);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("put{id}")]
     public async Task<IActionResult> PutServicio(int id, ServicioDto servicioDto)
     {
         if (id != servicioDto.ServicioCodigo)
@@ -60,7 +60,7 @@ public class ServiciosController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("delete{id}")]
     public async Task<IActionResult> DeleteServicio(int id)
     {
         var deleted = await _servicioService.DeleteServicio(id);

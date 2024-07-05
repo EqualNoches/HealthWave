@@ -36,6 +36,7 @@ BEGIN
     WHERE IDAutorizacion = @IDAutorizacion;
 END;
 GO
+
 --4)Listar todas las autorizaciones de seguro
 CREATE PROCEDURE ppAutorizacionListar
     @IDAseguradora INT = NULL
@@ -67,7 +68,7 @@ CREATE PROCEDURE ppConsultaCrear
 AS
 BEGIN
     INSERT INTO Consulta (Fecha, Estado, Costo, Motivo, Descripcion, CodigoPaciente, IDConsultorio, IDAutorizacion)
-    VALUES (@Fecha, @Estado, @Costo, @Motivo, @Descripción, @CodigoPaciente, @IDConsultorio, @IDAutorizacion);
+    VALUES (@Fecha, @Estado, @Costo, @Motivo, @Descripcion, @CodigoPaciente, @IDConsultorio, @IDAutorizacion);
 END;
 GO
 --2)Actualizar consulta existente
@@ -95,6 +96,7 @@ BEGIN
     WHERE ConsultaCodigo = @ConsultaCodigo;
 END;
 GO
+
 --3)Eliminar una consulta
 CREATE PROCEDURE ppConsultaEliminar
     @ConsultaCodigo INT

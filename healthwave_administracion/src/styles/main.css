@@ -1,0 +1,109 @@
+* {
+    font-family: 'Poppins', sans-serif;
+}
+  
+html {
+    height: 100%;
+    font-size: 13.5px;
+}
+
+body {
+    color: var(--p-text-color);
+    background-color: var(--ground-background);
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.login-wrapper {
+    background-color: var(--ground-background);
+}
+
+.bg-contraloria {
+    background-image: url('https://www.presidencia.gob.do/themes/custom/presidency/images/cupula-trans.png') !important;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.card {
+    background: var(--card-background);
+    border: var(--card-border);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.card-background {
+    background: var(--card-background);
+}
+
+.p-dropdown-items {
+    margin-bottom: 0 !important;
+}
+
+ol {
+    z-index: 1300 !important;
+}
+
+.sidebar-indicator {
+    background-color: var(--p-primary-color);
+    transform: none;
+    transform-origin: 50% 50% 0px;
+    border-radius: 9999px;
+    width: 1rem;
+    height: 100%;
+    left: -1rem;
+    top: .5rem;
+    bottom: .5rem;
+    position: absolute;
+}
+
+:root {
+    --mobile-menu-background: #fff;
+    --card-border: 1px solid var(--p-surface-200);
+    --card-background: #fff;
+    --border-color: var(--p-surface-200);
+    --ground-background: var(--p-surface-100);
+    --overlay-background: #fff;
+    --hover-background: var(--p-surface-100);
+}
+
+:root[class~="p-dark"] {
+    --mobile-menu-background: rgba(0, 0, 0, .3);
+    --card-border: 1px solid var(--p-surface-700);
+    --card-background: var(--p-surface-900);
+    --border-color: var(--p-surface-700);
+    --ground-background: var(--p-surface-950);
+    --overlay-background: var(--p-surface-900);
+    --hover-background: var(--p-surface-800);
+}
+
+::-webkit-scrollbar {
+    width: 20px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--p-primary-color);
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--p-primary-hover-color);
+}
+
+@media (min-width: 992px) {
+    .pl-20 {
+        padding-left: 20rem;
+    }
+}

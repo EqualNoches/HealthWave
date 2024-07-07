@@ -325,62 +325,62 @@ CREATE PROCEDURE ppFacturaRelacionarServicio
     @Costo DECIMAL(10, 2)
 AS
 BEGIN
-    INSERT INTO FacturaServicio (FacturaCodigo, ServicioCodigo, Costo)
+    INSERT INTO FacturaServicio (FacturaCodigoServicio, ServicioCodigo, Costo)
     VALUES (@FacturaCodigo, @ServicioCodigo, @Costo);
 END;
 GO
 
 --2)Eliminar las facturas asociadas a los servicios
 CREATE PROCEDURE ppFacturaDesrelacionarServicio
-    @FacturaCodigo VARCHAR(30),
+    @FacturaCodigoServicio VARCHAR(30),
     @ServicioCodigo INT
 AS
 BEGIN
     DELETE FROM FacturaServicio
-    WHERE FacturaCodigo = @FacturaCodigo AND ServicioCodigo = @ServicioCodigo;
+    WHERE FacturaCodigoServicio = @FacturaCodigoServicio AND ServicioCodigo = @ServicioCodigo;
 END;
 GO
 
 --3)Listar todas las facturas asciadas a los servicios
 CREATE PROCEDURE ppFacturaListarServicios
-    @FacturaCodigo VARCHAR(30)
+    @FacturaCodigoServicio VARCHAR(30)
 AS
 BEGIN
     SELECT * FROM FacturaServicio
-    WHERE FacturaCodigo = @FacturaCodigo;
+    WHERE FacturaCodigoServicio = @FacturaCodigoServicio;
 END;
 GO
 
 --4)Facturas asociadas a los productos
 CREATE PROCEDURE ppFacturaRelacionarProducto
-    @FacturaCodigo VARCHAR(30),
+    @FacturaCodigoProducto VARCHAR(30),
     @IDProducto INT,
     @Precio DECIMAL(10, 2),
     @Cantidad INT
 AS
 BEGIN
-    INSERT INTO FacturaProducto (FacturaCodigo, IDProducto, Precio, Cantidad)
-    VALUES (@FacturaCodigo, @IDProducto, @Precio, @Cantidad);
+    INSERT INTO FacturaProducto (FacturaCodigoProducto, IDProducto, Precio, Cantidad)
+    VALUES (@FacturaCodigoProducto, @IDProducto, @Precio, @Cantidad);
 END;
 GO
 
 --5)Eliminar las facturas asociadas a los productos
 CREATE PROCEDURE ppFacturaDesrelacionarProducto
-    @FacturaCodigo VARCHAR(30),
+    @FacturaCodigoProducto VARCHAR(30),
     @IDProducto INT
 AS
 BEGIN
     DELETE FROM FacturaProducto
-    WHERE FacturaCodigo = @FacturaCodigo AND IDProducto = @IDProducto;
+    WHERE FacturaCodigoProducto = @FacturaCodigoProducto AND IDProducto = @IDProducto;
 END;
 GO
 
 --6)Listar todas las facturas asociadas a los productos
 CREATE PROCEDURE ppFacturaListarProductos
-    @FacturaCodigo VARCHAR(30)
+    @FacturaCodigoProducto VARCHAR(30)
 AS
 BEGIN
     SELECT * FROM FacturaProducto
-    WHERE FacturaCodigo = @FacturaCodigo;
+    WHERE FacturaCodigoProducto = @FacturaCodigoProducto;
 END;
 GO

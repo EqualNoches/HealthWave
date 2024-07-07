@@ -5,21 +5,15 @@ using HospitalCore_core.Utilities;
 
 namespace HospitalCore_core.Services
 {
-    public class MetodoDePagoService : IMetodoDePagoService
+    public class MetodoDePagoService(HospitalCore dbContext) : IMetodoDePagoService
     {
-        private readonly HospitalCore _dbContext;
         private readonly LogManager<MetodoDePagoService> _logManager = new();
-
-        public MetodoDePagoService(HospitalCore dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         public IEnumerable<MetodoDePago> GetAllMetodosDePago()
         {
             try
             {
-                var metodos = _dbContext.MetodosDePago.ToList();
+                var metodos = dbContext.MetodosDePago.ToList();
                 _logManager.LogInfo("GetAllMetodosDePago executed successfully.");
                 return metodos;
             }
@@ -40,7 +34,7 @@ namespace HospitalCore_core.Services
                     return null;
                 }
 
-                var metodoDePago = _dbContext.MetodosDePago.Find(id);
+                var metodoDePago = dbContext.MetodosDePago.Find(id);
                 if (metodoDePago == null)
                 {
                     _logManager.LogInfo($"MetodoDePago with ID {id} not found.");
@@ -61,8 +55,8 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                _dbContext.MetodosDePago.Add(metodoDePago);
-                _dbContext.SaveChanges();
+                dbContext.MetodosDePago.Add(metodoDePago);
+                dbContext.SaveChanges();
                 _logManager.LogInfo("AddMetodoDePago executed successfully.");
             }
             catch (Exception ex)
@@ -76,8 +70,8 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                _dbContext.MetodosDePago.Update(metodoDePago);
-                _dbContext.SaveChanges();
+                dbContext.MetodosDePago.Update(metodoDePago);
+                dbContext.SaveChanges();
                 _logManager.LogInfo($"UpdateMetodoDePago executed successfully for ID {metodoDePago.CodigoMetodoDePago}.");
             }
             catch (Exception ex)
@@ -97,15 +91,15 @@ namespace HospitalCore_core.Services
                     return;
                 }
 
-                var metodoDePago = _dbContext.MetodosDePago.Find(id);
+                var metodoDePago = dbContext.MetodosDePago.Find(id);
                 if (metodoDePago == null)
                 {
                     _logManager.LogInfo($"MetodoDePago with ID {id} not found.");
                     return;
                 }
 
-                _dbContext.MetodosDePago.Remove(metodoDePago);
-                _dbContext.SaveChanges();
+                dbContext.MetodosDePago.Remove(metodoDePago);
+                dbContext.SaveChanges();
                 _logManager.LogInfo($"DeleteMetodoDePago executed successfully for ID {id}.");
             }
             catch (Exception ex)

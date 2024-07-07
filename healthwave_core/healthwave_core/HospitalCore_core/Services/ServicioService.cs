@@ -8,21 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HospitalCore_core.Services
 {
-    public class ServicioService : IServicioService
+    public class ServicioService(HospitalCore context) : IServicioService
     {
-        private readonly HospitalCore _context;
         private readonly LogManager<ServicioService> _logManager = new();
-
-        public ServicioService(HospitalCore context)
-        {
-            _context = context;
-        }
 
         public async Task<IEnumerable<ServicioDto>> GetAllServicios()
         {
             try
             {
-                var servicios = await _context.Servicios
+                var servicios = await context.Servicios
                     .Select(s => new ServicioDto
                     {
                         ServicioCodigo = s.ServicioCodigo,
@@ -47,7 +41,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var servicio = await _context.Servicios.FindAsync(id);
+                var servicio = await context.Servicios.FindAsync(id);
 
                 if (servicio == null)
                 {
@@ -89,8 +83,8 @@ namespace HospitalCore_core.Services
                     IDAseguradora = servicioDto.IDAseguradora
                 };
 
-                _context.Servicios.Add(servicio);
-                await _context.SaveChangesAsync();
+                context.Servicios.Add(servicio);
+                await context.SaveChangesAsync();
 
                 servicioDto.ServicioCodigo = servicio.ServicioCodigo;
                 _logManager.LogInfo($"Creado el servicio con ID {servicio.ServicioCodigo} exitosamente");
@@ -107,7 +101,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var servicio = await _context.Servicios.FindAsync(servicioDto.ServicioCodigo);
+                var servicio = await context.Servicios.FindAsync(servicioDto.ServicioCodigo);
 
                 if (servicio == null)
                 {
@@ -121,7 +115,7 @@ namespace HospitalCore_core.Services
                 servicio.Costo = servicioDto.Costo;
                 servicio.IDAseguradora = servicioDto.IDAseguradora;
 
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
                 _logManager.LogInfo($"Actualizado el servicio con ID {servicioDto.ServicioCodigo} exitosamente");
                 return servicioDto;
             }
@@ -136,7 +130,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var servicio = await _context.Servicios.FindAsync(id);
+                var servicio = await context.Servicios.FindAsync(id);
 
                 if (servicio == null)
                 {
@@ -144,8 +138,8 @@ namespace HospitalCore_core.Services
                     return false;
                 }
 
-                _context.Servicios.Remove(servicio);
-                await _context.SaveChangesAsync();
+                context.Servicios.Remove(servicio);
+                await context.SaveChangesAsync();
                 _logManager.LogInfo($"Eliminado el servicio con ID {id} exitosamente");
                 return true;
             }

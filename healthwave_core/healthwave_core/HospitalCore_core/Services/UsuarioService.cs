@@ -9,21 +9,15 @@ using HospitalCore_core.Utilities;
 
 namespace HospitalCore_core.Services
 {
-    public class UsuarioService : IUsuarioService
+    public class UsuarioService(HospitalCore dbContext) : IUsuarioService
     {
-        private readonly HospitalCore _dbContext;
         private readonly LogManager<UsuarioService> _logManager = new();
-
-        public UsuarioService(HospitalCore dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         public async Task<UsuarioDto?> GetUsuarioByIdAsync(string usuariocodigoOCodigoDocumento)
         {
             try
             {
-                var usuario = await _dbContext.Usuarios
+                var usuario = await dbContext.Usuarios
                     .Where(e => e.UsuarioCodigo == usuariocodigoOCodigoDocumento || e.DocumentoUsuario == usuariocodigoOCodigoDocumento)
                     .Include(e => e.PerfilUsuario)
                     .FirstOrDefaultAsync();
@@ -44,7 +38,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var usuarios = (await _dbContext.Usuarios
+                var usuarios = (await dbContext.Usuarios
                     .Include(e => e.PerfilUsuario)
                     .ToListAsync())
                     .Select(e => UsuarioDto.FromModel(e))
@@ -67,10 +61,10 @@ namespace HospitalCore_core.Services
                 var perfilUsuario = PerfilUsuario.FromDto(usuarioDto);
                 var usuario = Usuario.FromDto(usuarioDto);
 
-                _dbContext.PerfilUsuarios.Add(perfilUsuario);
-                _dbContext.Usuarios.Add(usuario);
+                dbContext.PerfilUsuarios.Add(perfilUsuario);
+                dbContext.Usuarios.Add(usuario);
 
-                await _dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Usuario {usuario.UsuarioCodigo} agregado exitosamente.");
 
                 return 1;
@@ -89,11 +83,11 @@ namespace HospitalCore_core.Services
                 var usuario = Usuario.FromDto(usuarioDto);
                 var perfilUsuario = PerfilUsuario.FromDto(usuarioDto);
 
-                _dbContext.PerfilUsuarios.Update(perfilUsuario);
+                dbContext.PerfilUsuarios.Update(perfilUsuario);
                 usuario.PerfilUsuario = perfilUsuario;
-                _dbContext.Usuarios.Update(usuario);
+                dbContext.Usuarios.Update(usuario);
 
-                await _dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Usuario {usuario.UsuarioCodigo} actualizado exitosamente.");
 
                 return 1;
@@ -109,24 +103,24 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                bool isUsuarioCodigo = await _dbContext.Usuarios.AnyAsync(u => u.UsuarioCodigo == usuariocodigoOCodigoDocumento);
+                bool isUsuarioCodigo = await dbContext.Usuarios.AnyAsync(u => u.UsuarioCodigo == usuariocodigoOCodigoDocumento);
 
                 CuentaCobrar? cuentaCobrarToUpdate;
 
                 if (isUsuarioCodigo)
                 {
-                    var codigoDocumento = await _dbContext.Usuarios
+                    var codigoDocumento = await dbContext.Usuarios
                         .Where(u => u.UsuarioCodigo == usuariocodigoOCodigoDocumento)
                         .Select(u => u.DocumentoUsuario)
                         .FirstOrDefaultAsync();
 
-                    cuentaCobrarToUpdate = await _dbContext.CuentaCobrars
+                    cuentaCobrarToUpdate = await dbContext.CuentaCobrars
                         .Include(c => c.CodigoPacienteNavigation)
                         .FirstOrDefaultAsync(c => c.CodigoPacienteNavigation.CodigoDocumento == codigoDocumento);
                 }
                 else
                 {
-                    cuentaCobrarToUpdate = await _dbContext.CuentaCobrars
+                    cuentaCobrarToUpdate = await dbContext.CuentaCobrars
                         .Include(c => c.CodigoPacienteNavigation)
                         .FirstOrDefaultAsync(c => c.CodigoPacienteNavigation.CodigoDocumento == usuariocodigoOCodigoDocumento);
                 }
@@ -134,8 +128,8 @@ namespace HospitalCore_core.Services
                 if (cuentaCobrarToUpdate != null)
                 {
                     cuentaCobrarToUpdate.Estado = cuentaCobrarToUpdate.Estado == "A" ? "D" : "A";
-                    _dbContext.CuentaCobrars.Update(cuentaCobrarToUpdate);
-                    await _dbContext.SaveChangesAsync();
+                    dbContext.CuentaCobrars.Update(cuentaCobrarToUpdate);
+                    await dbContext.SaveChangesAsync();
 
                     _logManager.LogInfo($"Estado de cuenta del usuario {usuariocodigoOCodigoDocumento} cambiado exitosamente.");
                     return 1;
@@ -154,14 +148,14 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var user = await _dbContext.Usuarios
+                var user = await dbContext.Usuarios
                     .Include(u => u.PerfilUsuario)
                     .FirstOrDefaultAsync(u => u.UsuarioCodigo == usuariocodigoOCodigoDocumento || u.DocumentoUsuario == usuariocodigoOCodigoDocumento);
 
                 if (user != null)
                 {
-                    _dbContext.Usuarios.Remove(user);
-                    int result = await _dbContext.SaveChangesAsync();
+                    dbContext.Usuarios.Remove(user);
+                    int result = await dbContext.SaveChangesAsync();
                     _logManager.LogInfo($"Usuario {usuariocodigoOCodigoDocumento} eliminado exitosamente.");
                     return result;
                 }
@@ -179,24 +173,24 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                bool isUsuarioCodigo = await _dbContext.Usuarios.AnyAsync(u => u.UsuarioCodigo == usuariocodigoOCodigoDocumento);
+                bool isUsuarioCodigo = await dbContext.Usuarios.AnyAsync(u => u.UsuarioCodigo == usuariocodigoOCodigoDocumento);
 
                 CuentaCobrar? cuenta;
 
                 if (isUsuarioCodigo)
                 {
-                    var codigoDocumento = await _dbContext.Usuarios
+                    var codigoDocumento = await dbContext.Usuarios
                         .Where(u => u.UsuarioCodigo == usuariocodigoOCodigoDocumento)
                         .Select(u => u.DocumentoUsuario)
                         .FirstOrDefaultAsync();
 
-                    cuenta = await _dbContext.CuentaCobrars
+                    cuenta = await dbContext.CuentaCobrars
                         .Include(c => c.CodigoPacienteNavigation)
                         .FirstOrDefaultAsync(c => c.CodigoPacienteNavigation.CodigoDocumento == codigoDocumento);
                 }
                 else
                 {
-                    cuenta = await _dbContext.CuentaCobrars
+                    cuenta = await dbContext.CuentaCobrars
                         .Include(c => c.CodigoPacienteNavigation)
                         .FirstOrDefaultAsync(c => c.CodigoPacienteNavigation.CodigoDocumento == usuariocodigoOCodigoDocumento);
                 }

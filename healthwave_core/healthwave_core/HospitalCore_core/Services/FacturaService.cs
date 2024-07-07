@@ -12,23 +12,17 @@ using HospitalCore_core.Utilities;
 
 namespace HospitalCore_core.Services
 {
-    public class FacturaService : IFacturaService
+    public class FacturaService(HospitalCore context) : IFacturaService
     {
-        private readonly HospitalCore _context;
         private readonly LogManager<FacturaService> _logManager = new();
-
-        public FacturaService(HospitalCore context)
-        {
-            _context = context;
-        }
 
         public async Task<int> AddFacturaAsync(FacturaDto facturaDto)
         {
             try
             {
                 var factura = Factura.FromDto(facturaDto);
-                _context.Facturas.Add(factura);
-                int result = await _context.SaveChangesAsync();
+                context.Facturas.Add(factura);
+                int result = await context.SaveChangesAsync();
                 _logManager.LogInfo($"Factura {factura.FacturaCodigo} agregada exitosamente.");
                 return result;
             }
@@ -43,7 +37,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var factura = await _context.Facturas.FindAsync(facturaDto.FacturaCodigo);
+                var factura = await context.Facturas.FindAsync(facturaDto.FacturaCodigo);
                 if (factura == null) return 0;
 
                 factura.MontoTotal = facturaDto.MontoTotal;
@@ -56,7 +50,7 @@ namespace HospitalCore_core.Services
                 factura.Idcuenta = facturaDto.Idcuenta;
                 factura.ConsultaCodigo = facturaDto.ConsultaCodigo;
 
-                int result = await _context.SaveChangesAsync();
+                int result = await context.SaveChangesAsync();
                 _logManager.LogInfo($"Factura {factura.FacturaCodigo} actualizada exitosamente.");
                 return result;
             }
@@ -71,11 +65,11 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var factura = await _context.Facturas.FindAsync(facturaCodigo);
+                var factura = await context.Facturas.FindAsync(facturaCodigo);
                 if (factura == null) return 0;
 
-                _context.Facturas.Remove(factura);
-                int result = await _context.SaveChangesAsync();
+                context.Facturas.Remove(factura);
+                int result = await context.SaveChangesAsync();
                 _logManager.LogInfo($"Factura {facturaCodigo} eliminada exitosamente.");
                 return result;
             }
@@ -90,7 +84,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var facturas = await _context.Facturas
+                var facturas = await context.Facturas
                     .Select(f => FacturaDto.FromModel(f))
                     .ToListAsync();
                 _logManager.LogInfo("Lista de facturas obtenida exitosamente.");
@@ -108,8 +102,8 @@ namespace HospitalCore_core.Services
             try
             {
                 var facturaServicio = FacturaServicio.FromDto(facturaServicioDto);
-                _context.FacturaServicios.Add(facturaServicio);
-                int result = await _context.SaveChangesAsync();
+                context.FacturaServicios.Add(facturaServicio);
+                int result = await context.SaveChangesAsync();
                 _logManager.LogInfo($"FacturaServicio agregado exitosamente.");
                 return result;
             }
@@ -124,12 +118,12 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var facturaServicio = await _context.FacturaServicios
+                var facturaServicio = await context.FacturaServicios
                     .FirstOrDefaultAsync(fs => fs.FacturaCodigoServicio == facturaCodigo && fs.ServicioCodigo == servicioCodigo);
                 if (facturaServicio == null) return 0;
 
-                _context.FacturaServicios.Remove(facturaServicio);
-                int result = await _context.SaveChangesAsync();
+                context.FacturaServicios.Remove(facturaServicio);
+                int result = await context.SaveChangesAsync();
                 _logManager.LogInfo($"FacturaServicio {facturaCodigo}-{servicioCodigo} eliminado exitosamente.");
                 return result;
             }
@@ -144,7 +138,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var facturaServicios = await _context.FacturaServicios
+                var facturaServicios = await context.FacturaServicios
                     .Where(fs => fs.FacturaCodigoNavigation.FacturaCodigo == facturaCodigo)
                     .Select(fs => FacturaServicioDto.FromModel(fs))
                     .ToListAsync();
@@ -163,8 +157,8 @@ namespace HospitalCore_core.Services
             try
             {
                 var facturaProducto = FacturaProducto.FromDto(facturaProductoDto);
-                _context.FacturaProductos.Add(facturaProducto);
-                int result = await _context.SaveChangesAsync();
+                context.FacturaProductos.Add(facturaProducto);
+                int result = await context.SaveChangesAsync();
                 _logManager.LogInfo($"FacturaProducto agregado exitosamente.");
                 return result;
             }
@@ -179,12 +173,12 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var facturaProducto = await _context.FacturaProductos
+                var facturaProducto = await context.FacturaProductos
                     .FirstOrDefaultAsync(fp => fp.FacturaCodigoProducto == facturaCodigoProducto && fp.Idproducto == idProducto);
                 if (facturaProducto == null) return 0;
 
-                _context.FacturaProductos.Remove(facturaProducto);
-                int result = await _context.SaveChangesAsync();
+                context.FacturaProductos.Remove(facturaProducto);
+                int result = await context.SaveChangesAsync();
                 _logManager.LogInfo($"FacturaProducto {facturaCodigoProducto}-{idProducto} eliminado exitosamente.");
                 return result;
             }
@@ -199,7 +193,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var facturaProductos = await _context.FacturaProductos
+                var facturaProductos = await context.FacturaProductos
                     .Where(fp => fp.FacturaCodigoProducto == facturaCodigoProducto)
                     .Select(fp => FacturaProductoDto.FromModel(fp))
                     .ToListAsync();
@@ -217,14 +211,14 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var factura = await _context.Facturas.FindAsync(facturaCodigo);
+                var factura = await context.Facturas.FindAsync(facturaCodigo);
                 if (factura == null) return 0;
 
-                var metodoDePago = await _context.MetodosDePago.FindAsync(codigoMetodoDePago);
+                var metodoDePago = await context.MetodosDePago.FindAsync(codigoMetodoDePago);
                 if (metodoDePago == null) return 0;
 
                 factura.CodigoMetodoDePago = codigoMetodoDePago;
-                int result = await _context.SaveChangesAsync();
+                int result = await context.SaveChangesAsync();
                 _logManager.LogInfo($"Método de pago {codigoMetodoDePago} agregado a la factura {facturaCodigo} exitosamente.");
                 return result;
             }
@@ -239,7 +233,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var factura = await _context.Facturas.FindAsync(facturaCodigo);
+                var factura = await context.Facturas.FindAsync(facturaCodigo);
                 if (factura == null) return 0;
 
                 if (factura.CodigoMetodoDePago == codigoMetodoDePago)
@@ -247,7 +241,7 @@ namespace HospitalCore_core.Services
                     factura.CodigoMetodoDePago = null;
                 }
 
-                int result = await _context.SaveChangesAsync();
+                int result = await context.SaveChangesAsync();
                 _logManager.LogInfo($"Método de pago {codigoMetodoDePago} eliminado de la factura {facturaCodigo} exitosamente.");
                 return result;
             }
@@ -262,7 +256,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var factura = await _context.Facturas
+                var factura = await context.Facturas
                     .Include(f => f.CodigoMetodoDePagoNavigation)
                     .FirstOrDefaultAsync(f => f.FacturaCodigo == facturaCodigo);
 

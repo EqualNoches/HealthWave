@@ -7,15 +7,9 @@ using HospitalCore_core.Utilities;
 
 namespace HospitalCore_core.Services
 {
-    public class AfeccionService : IAfeccionService
+    public class AfeccionService(HospitalCore _context) : IAfeccionService
     {
-        private readonly HospitalCore _context;
         private readonly LogManager<AfeccionService> _logManager = new();
-
-        public AfeccionService(HospitalCore context)
-        {
-            _context = context;
-        }
 
         public async Task<IEnumerable<AfeccionDto>> GetAfecciones()
         {

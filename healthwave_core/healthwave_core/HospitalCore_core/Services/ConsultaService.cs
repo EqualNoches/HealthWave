@@ -8,23 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HospitalCore_core.Services
 {
-    public class ConsultaService : IConsultaService
+    public class ConsultaService(HospitalCore dbContext) : IConsultaService
     {
         private readonly LogManager<ConsultaService> _logManager = new();
-        private readonly HospitalCore _dbContext;
-
-        public ConsultaService(HospitalCore dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         public async Task<int> AddConsultaAfeccionAsync(int consultaCodigo, int idAfeccion)
         {
             try
             {
-                _dbContext.Consulta.First(e => e.ConsultaCodigo == consultaCodigo).Idafeccions
-                    .Add(_dbContext.Afeccions.First(e => e.IdAfeccion == idAfeccion));
-                int result = await _dbContext.SaveChangesAsync();
+                dbContext.Consulta.First(e => e.ConsultaCodigo == consultaCodigo).Idafeccions
+                    .Add(dbContext.Afeccions.First(e => e.IdAfeccion == idAfeccion));
+                int result = await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Afección {idAfeccion} agregada a consulta {consultaCodigo} exitosamente.");
                 return result;
             }
@@ -40,8 +34,8 @@ namespace HospitalCore_core.Services
             try
             {
                 var consultum = Consultum.FromDto(consulta);
-                await _dbContext.Consulta.AddAsync(consultum);
-                await _dbContext.SaveChangesAsync();
+                await dbContext.Consulta.AddAsync(consultum);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Consulta {consulta.ConsultaCodigo} creada exitosamente.");
                 return 1;
             }
@@ -56,7 +50,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var consultum = _dbContext.Consulta.Include(consultum => consultum.PrescripcionProductos)
+                var consultum = dbContext.Consulta.Include(consultum => consultum.PrescripcionProductos)
                     .First(e => e.ConsultaCodigo == consultaCodigo);
                 var prescripcionProducto = consultum.PrescripcionProductos.FirstOrDefault(e => e.Idproducto == idProducto);
                 if (prescripcionProducto == null)
@@ -72,7 +66,7 @@ namespace HospitalCore_core.Services
                     prescripcionProducto.Cantidad += cantidad;
                 }
 
-                int result = await _dbContext.SaveChangesAsync();
+                int result = await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Producto {idProducto} agregado a consulta {consultaCodigo} exitosamente.");
                 return result;
             }
@@ -87,9 +81,9 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                _dbContext.Consulta.First(e => e.ConsultaCodigo == consultaCodigo).ServicioCodigos
-                    .Add(_dbContext.Servicios.First(e => e.ServicioCodigo == servicioCodigo));
-                int result = await _dbContext.SaveChangesAsync();
+                dbContext.Consulta.First(e => e.ConsultaCodigo == consultaCodigo).ServicioCodigos
+                    .Add(dbContext.Servicios.First(e => e.ServicioCodigo == servicioCodigo));
+                int result = await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Servicio {servicioCodigo} agregado a consulta {consultaCodigo} exitosamente.");
                 return result;
             }
@@ -104,7 +98,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var consultum = await _dbContext.Consulta.Where(e => e.ConsultaCodigo == consultaCodigo)
+                var consultum = await dbContext.Consulta.Where(e => e.ConsultaCodigo == consultaCodigo)
                     .Include(e => e.Idafeccions).FirstAsync();
                 _logManager.LogInfo($"Afecciones obtenidas para la consulta {consultaCodigo} exitosamente.");
                 return consultum.Idafeccions.ToList();
@@ -120,7 +114,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var consultas = await _dbContext.Consulta.ToListAsync();
+                var consultas = await dbContext.Consulta.ToListAsync();
                 _logManager.LogInfo("Consultas obtenidas exitosamente.");
                 return consultas.Select(e => ConsultaDto.FromModel(e)).ToList();
             }
@@ -135,7 +129,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var productos = await _dbContext.Productos
+                var productos = await dbContext.Productos
                     .FromSql($"EXEC dbo.spConsultaListarProductos {consultaCodigo}").ToListAsync();
                 _logManager.LogInfo($"Productos obtenidos para la consulta {consultaCodigo} exitosamente.");
                 return productos.Select(e => ProductoDto.FromModel(e)).ToList();
@@ -151,7 +145,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var result = await _dbContext.Consulta.Where(e => e.ConsultaCodigo == consulta.ConsultaCodigo).FirstAsync();
+                var result = await dbContext.Consulta.Where(e => e.ConsultaCodigo == consulta.ConsultaCodigo).FirstAsync();
                 result.CodigoPaciente = consulta.DocumentoPaciente;
                 result.CodigoDocumentoMedico = consulta.DocumentoMedico;
                 result.Idconsultorio = consulta.IdConsultorio;
@@ -159,7 +153,7 @@ namespace HospitalCore_core.Services
                 result.Descripcion = consulta.Comentarios;
                 result.Costo = consulta.costo;
                 result.Estado = consulta.Estado;
-                await _dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Consulta {consulta.ConsultaCodigo} actualizada exitosamente.");
                 return 1;
             }
@@ -174,8 +168,8 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                _dbContext.Consulta.Remove(_dbContext.Consulta.First(e => e.ConsultaCodigo == consultaCodigo));
-                await _dbContext.SaveChangesAsync();
+                dbContext.Consulta.Remove(dbContext.Consulta.First(e => e.ConsultaCodigo == consultaCodigo));
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Consulta {consultaCodigo} eliminada exitosamente.");
                 return 1;
             }
@@ -190,10 +184,10 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var result = await _dbContext.Consulta.Where(e => e.ConsultaCodigo == consultaCodigo)
+                var result = await dbContext.Consulta.Where(e => e.ConsultaCodigo == consultaCodigo)
                     .Include(consultum => consultum.ServicioCodigos).FirstAsync();
                 result.ServicioCodigos.Remove(result.ServicioCodigos.First(e => e.ServicioCodigo == servicioCodigo));
-                await _dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Servicio {servicioCodigo} desrelacionado de consulta {consultaCodigo} exitosamente.");
                 return 1;
             }
@@ -208,7 +202,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var servicios = await _dbContext.Consulta.Where(e => e.ConsultaCodigo == consultaCodigo)
+                var servicios = await dbContext.Consulta.Where(e => e.ConsultaCodigo == consultaCodigo)
                     .Include(e => e.ServicioCodigos).SelectMany(e => e.ServicioCodigos).ToListAsync();
                 _logManager.LogInfo($"Servicios obtenidos para la consulta {consultaCodigo} exitosamente.");
                 return servicios;
@@ -224,7 +218,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                int result = await _dbContext.Database.ExecuteSqlAsync($"EXEC dbo.spConsultaDesrelacionarProducto {consultaCodigo}, {idProducto}");
+                int result = await dbContext.Database.ExecuteSqlAsync($"EXEC dbo.spConsultaDesrelacionarProducto {consultaCodigo}, {idProducto}");
                 _logManager.LogInfo($"Producto {idProducto} desrelacionado de consulta {consultaCodigo} exitosamente.");
                 return result;
             }
@@ -239,10 +233,10 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var result = await _dbContext.Consulta.Where(e => e.ConsultaCodigo == consultaCodigo)
+                var result = await dbContext.Consulta.Where(e => e.ConsultaCodigo == consultaCodigo)
                     .Include(consultum => consultum.Idafeccions).FirstAsync();
                 result.Idafeccions.Remove(result.Idafeccions.First(e => e.IdAfeccion == idAfeccion));
-                await _dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Afección {idAfeccion} desrelacionada de consulta {consultaCodigo} exitosamente.");
                 return 1;
             }

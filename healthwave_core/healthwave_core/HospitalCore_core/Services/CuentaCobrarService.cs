@@ -7,21 +7,15 @@ using HospitalCore_core.Utilities;
 
 namespace HospitalCore_core.Services
 {
-    public class CuentaCobrarService : ICuentaCobrarService
+    public class CuentaCobrarService(HospitalCore context) : ICuentaCobrarService
     {
-        private readonly HospitalCore _context;
         private readonly LogManager<CuentaCobrarService> _logManager = new();
-
-        public CuentaCobrarService(HospitalCore context)
-        {
-            _context = context;
-        }
 
         public async Task<IEnumerable<CuentaCobrarDto>> GetCuentasCobrar()
         {
             try
             {
-                var cuentas = await _context.CuentaCobrars
+                var cuentas = await context.CuentaCobrars
                     .Select(c => new CuentaCobrarDto
                     {
                         Idcuenta = c.Idcuenta,
@@ -44,7 +38,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var cuenta = await _context.CuentaCobrars.FindAsync(id);
+                var cuenta = await context.CuentaCobrars.FindAsync(id);
 
                 if (cuenta == null)
                     return null;
@@ -76,8 +70,8 @@ namespace HospitalCore_core.Services
                     CodigoPaciente = cuentaCobrarDto.CodigoPaciente
                 };
 
-                _context.CuentaCobrars.Add(cuenta);
-                await _context.SaveChangesAsync();
+                context.CuentaCobrars.Add(cuenta);
+                await context.SaveChangesAsync();
 
                 cuentaCobrarDto.Idcuenta = cuenta.Idcuenta;
                 _logManager.LogInfo($"Cuenta por cobrar creada exitosamente con ID {cuenta.Idcuenta}.");
@@ -94,7 +88,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var cuenta = await _context.CuentaCobrars.FindAsync(id);
+                var cuenta = await context.CuentaCobrars.FindAsync(id);
 
                 if (cuenta == null)
                     return null;
@@ -103,7 +97,7 @@ namespace HospitalCore_core.Services
                 cuenta.Estado = cuentaCobrarDto.Estado;
                 cuenta.CodigoPaciente = cuentaCobrarDto.CodigoPaciente;
 
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
                 _logManager.LogInfo($"Cuenta por cobrar con ID {id} actualizada exitosamente.");
                 return cuentaCobrarDto;
             }
@@ -118,13 +112,13 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var cuenta = await _context.CuentaCobrars.FindAsync(id);
+                var cuenta = await context.CuentaCobrars.FindAsync(id);
 
                 if (cuenta == null)
                     return false;
 
-                _context.CuentaCobrars.Remove(cuenta);
-                await _context.SaveChangesAsync();
+                context.CuentaCobrars.Remove(cuenta);
+                await context.SaveChangesAsync();
                 _logManager.LogInfo($"Cuenta por cobrar con ID {id} eliminada exitosamente.");
                 return true;
             }

@@ -7,23 +7,17 @@ using HospitalCore_core.DTO;
 
 namespace HospitalCore_core.Services
 {
-    public class ConsultorioService : IConsultorioService
+    public class ConsultorioService(HospitalCore dbContext) : IConsultorioService
     {
-        private readonly HospitalCore _dbContext;
         private readonly LogManager<ConsultorioService> _logManager = new();
-
-        public ConsultorioService(HospitalCore dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         public async Task<IEnumerable<ConsultorioDTO>> GetConsultoriosAsync()
         {
             try
             {
-                var consultorios = await _dbContext.Consultorios.ToListAsync();
+                var consultorios = await dbContext.Consultorios.ToListAsync();
                 // Mapping to DTO
-                var consultorioDTOs = consultorios.Select(c => new ConsultorioDTO
+                var consultorioDtOs = consultorios.Select(c => new ConsultorioDTO
                 {
                     IDConsultorio = c.IDConsultorio,
                     Nombre = c.Nombre,
@@ -31,7 +25,7 @@ namespace HospitalCore_core.Services
                     Telefono = c.Telefono
                 });
                 _logManager.LogInfo("Successfully retrieved consultorios.");
-                return consultorioDTOs;
+                return consultorioDtOs;
             }
             catch (Exception ex)
             {
@@ -44,7 +38,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var consultorio = await _dbContext.Consultorios.FindAsync(idConsultorio);
+                var consultorio = await dbContext.Consultorios.FindAsync(idConsultorio);
                 if (consultorio == null)
                 {
                     _logManager.LogInfo($"Consultorio with ID {idConsultorio} not found.");
@@ -79,8 +73,8 @@ namespace HospitalCore_core.Services
                     Telefono = consultorioDTO.Telefono
                 };
 
-                _dbContext.Consultorios.Add(consultorio);
-                await _dbContext.SaveChangesAsync();
+                dbContext.Consultorios.Add(consultorio);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Successfully created consultorio with ID {consultorio.IDConsultorio}.");
                 return consultorio.IDConsultorio;
             }
@@ -95,7 +89,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var consultorio = await _dbContext.Consultorios.FindAsync(consultorioDTO.IDConsultorio);
+                var consultorio = await dbContext.Consultorios.FindAsync(consultorioDTO.IDConsultorio);
                 if (consultorio == null)
                 {
                     _logManager.LogInfo($"Consultorio with ID {consultorioDTO.IDConsultorio} not found.");
@@ -106,8 +100,8 @@ namespace HospitalCore_core.Services
                 consultorio.Direccion = consultorioDTO.Direccion;
                 consultorio.Telefono = consultorioDTO.Telefono;
 
-                _dbContext.Consultorios.Update(consultorio);
-                await _dbContext.SaveChangesAsync();
+                dbContext.Consultorios.Update(consultorio);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Successfully updated consultorio with ID {consultorio.IDConsultorio}.");
                 return consultorio.IDConsultorio;
             }
@@ -122,15 +116,15 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var consultorio = await _dbContext.Consultorios.FindAsync(idConsultorio);
+                var consultorio = await dbContext.Consultorios.FindAsync(idConsultorio);
                 if (consultorio == null)
                 {
                     _logManager.LogInfo($"Consultorio with ID {idConsultorio} not found.");
                     return 0;
                 }
 
-                _dbContext.Consultorios.Remove(consultorio);
-                await _dbContext.SaveChangesAsync();
+                dbContext.Consultorios.Remove(consultorio);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"Successfully deleted consultorio with ID {idConsultorio}.");
                 return idConsultorio;
             }

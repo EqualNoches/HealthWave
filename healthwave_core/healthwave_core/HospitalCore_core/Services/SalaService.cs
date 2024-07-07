@@ -8,15 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HospitalCore_core.Services
 {
-    public class SalaService : ISalaService
+    public class SalaService(HospitalCore dbContext) : ISalaService
     {
-        private readonly HospitalCore _dbContext;
         private readonly LogManager<SalaService> _logManager = new LogManager<SalaService>();
-
-        public SalaService(HospitalCore dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         public async Task<int> CreateSalaAsync(SalaDto salaDto)
         {
@@ -27,8 +21,8 @@ namespace HospitalCore_core.Services
                     Estado = salaDto.Estado
                 };
 
-                _dbContext.Salas.Add(sala);
-                await _dbContext.SaveChangesAsync();
+                dbContext.Salas.Add(sala);
+                await dbContext.SaveChangesAsync();
 
                 _logManager.LogInfo("Sala created successfully.");
                 return 1;
@@ -44,7 +38,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var salas = await _dbContext.Salas
+                var salas = await dbContext.Salas
                     .Select(s => new SalaDto { NumSala = (uint)s.NumSala, Estado = s.Estado })
                     .ToListAsync();
 
@@ -62,7 +56,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var sala = await _dbContext.Salas.FindAsync(numSala);
+                var sala = await dbContext.Salas.FindAsync(numSala);
                 if (sala == null)
                 {
                     _logManager.LogInfo($"Sala with number {numSala} not found.");
@@ -70,8 +64,8 @@ namespace HospitalCore_core.Services
                 }
 
                 sala.Estado = sala.Estado == "D" ? "O" : "D";
-                _dbContext.Salas.Update(sala);
-                await _dbContext.SaveChangesAsync();
+                dbContext.Salas.Update(sala);
+                await dbContext.SaveChangesAsync();
 
                 _logManager.LogInfo($"Sala state updated successfully for number {numSala}.");
                 return 1;
@@ -87,15 +81,15 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var sala = await _dbContext.Salas.FindAsync(numSala);
+                var sala = await dbContext.Salas.FindAsync(numSala);
                 if (sala == null)
                 {
                     _logManager.LogInfo($"Sala with number {numSala} not found for deletion.");
                     return 0;
                 }
 
-                _dbContext.Salas.Remove(sala);
-                await _dbContext.SaveChangesAsync();
+                dbContext.Salas.Remove(sala);
+                await dbContext.SaveChangesAsync();
 
                 _logManager.LogInfo($"Sala deleted successfully for number {numSala}.");
                 return 1;

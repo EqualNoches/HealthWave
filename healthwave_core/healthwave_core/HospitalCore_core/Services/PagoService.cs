@@ -8,22 +8,16 @@ using Microsoft.Data.SqlClient;
 
 namespace HospitalCore_core.Services
 {
-    public class PagoService : IPagoService
+    public class PagoService(HospitalCore dbCore) : IPagoService
     {
-        private readonly HospitalCore _dbCore;
         private readonly LogManager<PagoService> _logManager = new();
-
-        public PagoService(HospitalCore dbCore)
-        {
-            _dbCore = dbCore;
-        }
 
         public async Task<int> CreatePago(Pago pago)
         {
             try
             {
-                _dbCore.Pagos.Add(pago);
-                await _dbCore.SaveChangesAsync();
+                dbCore.Pagos.Add(pago);
+                await dbCore.SaveChangesAsync();
                 _logManager.LogInfo("CreatePago executed successfully.");
                 return 1;
             }
@@ -43,7 +37,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var pagos = await _dbCore.Pagos.ToListAsync();
+                var pagos = await dbCore.Pagos.ToListAsync();
                 _logManager.LogInfo("GetPagos executed successfully.");
                 return pagos;
             }
@@ -58,7 +52,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var pago = await _dbCore.Pagos.FindAsync(idPago);
+                var pago = await dbCore.Pagos.FindAsync(idPago);
                 if (pago == null)
                 {
                     _logManager.LogInfo($"Pago with ID {idPago} not found.");
@@ -78,8 +72,8 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                _dbCore.Entry(pago).State = EntityState.Modified;
-                await _dbCore.SaveChangesAsync();
+                dbCore.Entry(pago).State = EntityState.Modified;
+                await dbCore.SaveChangesAsync();
                 _logManager.LogInfo($"UpdatePago executed successfully for ID {pago.Idpago}.");
                 return 1;
             }
@@ -94,15 +88,15 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var pago = await _dbCore.Pagos.FindAsync(idPago);
+                var pago = await dbCore.Pagos.FindAsync(idPago);
                 if (pago == null)
                 {
                     _logManager.LogInfo($"Pago with ID {idPago} not found.");
                     return 0;
                 }
 
-                _dbCore.Pagos.Remove(pago);
-                await _dbCore.SaveChangesAsync();
+                dbCore.Pagos.Remove(pago);
+                await dbCore.SaveChangesAsync();
                 _logManager.LogInfo($"DeletePago executed successfully for ID {idPago}.");
                 return 1;
             }

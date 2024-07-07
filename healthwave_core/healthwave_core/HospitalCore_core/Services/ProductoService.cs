@@ -7,15 +7,9 @@ using HospitalCore_core.DTO;
 
 namespace HospitalCore_core.Services
 {
-    public class ProductoService : IProductoService
+    public class ProductoService(HospitalCore dbContext) : IProductoService
     {
-        private readonly HospitalCore dbContext;
         private readonly LogManager<ProductoService> _logManager = new();
-
-        public ProductoService(HospitalCore dbContext)
-        {
-            this.dbContext = dbContext;
-        }
 
         public async Task<List<Producto?>> GetProductosAsync()
         {

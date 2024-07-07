@@ -8,15 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HospitalCore_core.Services
 {
-    public class TipoServicioService : ITipoServicioService
+    public class TipoServicioService(HospitalCore dbContext) : ITipoServicioService
     {
-        private readonly HospitalCore _dbContext;
         private readonly LogManager<TipoServicioService> _logManager = new();
-
-        public TipoServicioService(HospitalCore dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         public async Task<int> AddTipoServicioAsync(TipoServicioDto tipoServicioDto)
         {
@@ -27,8 +21,8 @@ namespace HospitalCore_core.Services
                     Nombre = tipoServicioDto.Nombre
                 };
 
-                _dbContext.TipoServicios.Add(tipoServicio);
-                await _dbContext.SaveChangesAsync();
+                dbContext.TipoServicios.Add(tipoServicio);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo("Tipo de servicio creado con éxito.");
                 return tipoServicio.IdTipoServicio; // Retorna el ID del tipo de servicio creado
             }
@@ -43,7 +37,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var tipoServicios = await _dbContext.TipoServicios
+                var tipoServicios = await dbContext.TipoServicios
                     .Select(ts => new TipoServicioDto { IdTipoServicio = ts.IdTipoServicio, Nombre = ts.Nombre })
                     .ToListAsync();
 
@@ -61,7 +55,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var tipoServicio = await _dbContext.TipoServicios.FindAsync(tipoServicioDto.IdTipoServicio);
+                var tipoServicio = await dbContext.TipoServicios.FindAsync(tipoServicioDto.IdTipoServicio);
                 if (tipoServicio == null)
                 {
                     _logManager.LogInfo("Tipo de servicio no encontrado.");
@@ -69,8 +63,8 @@ namespace HospitalCore_core.Services
                 }
 
                 tipoServicio.Nombre = tipoServicioDto.Nombre;
-                _dbContext.TipoServicios.Update(tipoServicio);
-                await _dbContext.SaveChangesAsync();
+                dbContext.TipoServicios.Update(tipoServicio);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo("Tipo de servicio actualizado con éxito.");
                 return 1;
             }
@@ -85,15 +79,15 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var tipoServicio = await _dbContext.TipoServicios.FindAsync(idTipoServicio);
+                var tipoServicio = await dbContext.TipoServicios.FindAsync(idTipoServicio);
                 if (tipoServicio == null)
                 {
                     _logManager.LogInfo("Tipo de servicio no encontrado.");
                     return 0;
                 }
 
-                _dbContext.TipoServicios.Remove(tipoServicio);
-                await _dbContext.SaveChangesAsync();
+                dbContext.TipoServicios.Remove(tipoServicio);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo("Tipo de servicio eliminado con éxito.");
                 return 1;
             }

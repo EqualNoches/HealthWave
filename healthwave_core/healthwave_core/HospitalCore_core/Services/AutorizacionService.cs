@@ -8,15 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HospitalCore_core.Services
 {
-    public class AutorizacionService : IAutorizacionService
+    public class AutorizacionService(HospitalCore dbContext) : IAutorizacionService
     {
-        private readonly HospitalCore _dbContext;
         private readonly LogManager<AutorizacionService> _logManager = new();
-
-        public AutorizacionService(HospitalCore dbContext)
-        {
-            this._dbContext = dbContext;
-        }
 
         public async Task<int> AddAutorizacion(AutorizacionDTO autorizacionDto, int? idIngreso, string? consultaCodigo, string? facturaCodigo, string? servicioCodigo, int? idProducto)
         {
@@ -35,46 +29,46 @@ namespace HospitalCore_core.Services
 
                 if (idIngreso != null)
                 {
-                    var ingreso = await _dbContext.Ingresos.FindAsync(idIngreso);
+                    var ingreso = await dbContext.Ingresos.FindAsync(idIngreso);
                     if (ingreso == null)
                         throw new InvalidOperationException("No existe este ingreso");
 
                     ingreso.Idautorizacion = autorizacion.Idautorizacion;
-                    _dbContext.Entry(ingreso).State = EntityState.Modified;
+                    dbContext.Entry(ingreso).State = EntityState.Modified;
                 }
 
                 if (!string.IsNullOrEmpty(consultaCodigo))
                 {
-                    var consulta = await _dbContext.Consulta.SingleOrDefaultAsync(c => c.ConsultaCodigo == int.Parse(consultaCodigo));
+                    var consulta = await dbContext.Consulta.SingleOrDefaultAsync(c => c.ConsultaCodigo == int.Parse(consultaCodigo));
                     if (consulta == null)
                         throw new InvalidOperationException("No existe esa consulta");
 
                     consulta.Idautorizacion = autorizacion.Idautorizacion;
-                    _dbContext.Entry(consulta).State = EntityState.Modified;
+                    dbContext.Entry(consulta).State = EntityState.Modified;
                 }
 
                 if (!string.IsNullOrEmpty(servicioCodigo) && !string.IsNullOrEmpty(facturaCodigo))
                 {
-                    var facturaServicios = await _dbContext.FacturaServicios.SingleOrDefaultAsync(fS => fS.ServicioCodigo == servicioCodigo && fS.FacturaCodigoServicio == facturaCodigo);
+                    var facturaServicios = await dbContext.FacturaServicios.SingleOrDefaultAsync(fS => fS.ServicioCodigo == servicioCodigo && fS.FacturaCodigoServicio == facturaCodigo);
                     if (facturaServicios == null)
                         throw new InvalidOperationException("El servicio proporcionado no existe");
 
                     facturaServicios.Idautorizacion = autorizacion.Idautorizacion;
-                    _dbContext.Entry(facturaServicios).State = EntityState.Modified;
+                    dbContext.Entry(facturaServicios).State = EntityState.Modified;
                 }
 
                 if (idProducto != null && !string.IsNullOrEmpty(facturaCodigo))
                 {
-                    var facturaProducto = await _dbContext.FacturaProductos.SingleOrDefaultAsync(fp => fp.Idproducto == idProducto && fp.FacturaCodigoProducto == facturaCodigo);
+                    var facturaProducto = await dbContext.FacturaProductos.SingleOrDefaultAsync(fp => fp.Idproducto == idProducto && fp.FacturaCodigoProducto == facturaCodigo);
                     if (facturaProducto == null)
                         throw new ArgumentException("El producto facturado provisto no existe");
 
                     facturaProducto.Idautorizacion = autorizacion.Idautorizacion;
-                    _dbContext.Entry(facturaProducto).State = EntityState.Modified;
+                    dbContext.Entry(facturaProducto).State = EntityState.Modified;
                 }
 
-                _dbContext.Autorizacions.Add(autorizacion);
-                var response = await _dbContext.SaveChangesAsync();
+                dbContext.Autorizacions.Add(autorizacion);
+                var response = await dbContext.SaveChangesAsync();
                 _logManager.LogInfo("La autorizacion fue creada correctamente");
                 return response;
 
@@ -90,14 +84,14 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var autorizacion = await _dbContext.Autorizacions.FindAsync(id);
+                var autorizacion = await dbContext.Autorizacions.FindAsync(id);
                 if (autorizacion == null)
                 {
                     return 0;
                 }
 
-                _dbContext.Autorizacions.Remove(autorizacion);
-                await _dbContext.SaveChangesAsync();
+                dbContext.Autorizacions.Remove(autorizacion);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo("Se borro correctamente la autorización");
                 return 1;
             }
@@ -112,7 +106,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var response = await _dbContext.Autorizacions.Select(a => new AutorizacionDTO
+                var response = await dbContext.Autorizacions.Select(a => new AutorizacionDTO
                 {
                     Idautorizacion = a.Idautorizacion,
                     FechaAutorizacion = a.FechaAutorizacion,
@@ -133,7 +127,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var autorizacion = await _dbContext.Autorizacions.FindAsync(id);
+                var autorizacion = await dbContext.Autorizacions.FindAsync(id);
                 if (autorizacion == null)
                 {
                     _logManager.LogInfo("no se encontro el registro en la base de datos");
@@ -169,11 +163,11 @@ namespace HospitalCore_core.Services
                     Idaseguradora = autorizacionDto.Idaseguradora
                 };
 
-                _dbContext.Entry(autorizacion).State = EntityState.Modified;
+                dbContext.Entry(autorizacion).State = EntityState.Modified;
 
                 try
                 {
-                    await _dbContext.SaveChangesAsync();
+                    await dbContext.SaveChangesAsync();
                 }
                 catch (Exception e)
                 {
@@ -197,7 +191,7 @@ namespace HospitalCore_core.Services
 
         private bool AutorizacionExists(int id)
         {
-            return _dbContext.Autorizacions.Any(e => e.Idautorizacion == id);
+            return dbContext.Autorizacions.Any(e => e.Idautorizacion == id);
         }
     }
 }

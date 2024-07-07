@@ -7,15 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HospitalCore_core.Services
 {
-    public class AseguradoraService : IAseguradoraService
+    public class AseguradoraService(HospitalCore dbContext) : IAseguradoraService
     {
-        private readonly HospitalCore _dbContext;
         private readonly LogManager<AseguradoraService> _logManager = new();
-
-        public AseguradoraService(HospitalCore dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         public async Task<int> CreateAseguradora(Aseguradora aseguradora)
         {
@@ -27,8 +21,8 @@ namespace HospitalCore_core.Services
                     return 0;
                 }
 
-                _dbContext.Aseguradoras.Add(aseguradora);
-                await _dbContext.SaveChangesAsync();
+                dbContext.Aseguradoras.Add(aseguradora);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo("La aseguradora fue creada correctamente.");
                 return 1;
             }
@@ -43,7 +37,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                return await _dbContext.Aseguradoras.ToListAsync();
+                return await dbContext.Aseguradoras.ToListAsync();
             }
             catch (Exception ex)
             {
@@ -56,7 +50,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var aseguradora = await _dbContext.Aseguradoras.FindAsync(id);
+                var aseguradora = await dbContext.Aseguradoras.FindAsync(id);
                 if (aseguradora == null)
                 {
                     _logManager.LogInfo($"No se encontró la aseguradora con ID {id}.");
@@ -74,11 +68,11 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                _dbContext.Entry(aseguradora).State = EntityState.Modified;
+                dbContext.Entry(aseguradora).State = EntityState.Modified;
 
                 try
                 {
-                    await _dbContext.SaveChangesAsync();
+                    await dbContext.SaveChangesAsync();
                     _logManager.LogInfo($"La aseguradora con ID {aseguradora.Idaseguradora} fue actualizada correctamente.");
                     return 1;
                 }
@@ -103,15 +97,15 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var aseguradora = await _dbContext.Aseguradoras.FindAsync(id);
+                var aseguradora = await dbContext.Aseguradoras.FindAsync(id);
                 if (aseguradora == null)
                 {
                     _logManager.LogInfo($"No se encontró la aseguradora con ID {id} para eliminar.");
                     return 0;
                 }
 
-                _dbContext.Aseguradoras.Remove(aseguradora);
-                await _dbContext.SaveChangesAsync();
+                dbContext.Aseguradoras.Remove(aseguradora);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"La aseguradora con ID {id} fue eliminada correctamente.");
                 return 1;
             }
@@ -124,7 +118,7 @@ namespace HospitalCore_core.Services
 
         private bool AseguradoraExists(uint id)
         {
-            return _dbContext.Aseguradoras.Any(e => e.Idaseguradora == id);
+            return dbContext.Aseguradoras.Any(e => e.Idaseguradora == id);
         }
     }
 }

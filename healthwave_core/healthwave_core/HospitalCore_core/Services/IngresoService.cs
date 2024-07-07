@@ -7,15 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HospitalCore_core.Services
 {
-    public class IngresoService : IIngresoService
+    public class IngresoService(HospitalCore dbContext) : IIngresoService
     {
-        private readonly HospitalCore _dbContext;
         private readonly LogManager<IngresoService> _logManager = new();
-
-        public IngresoService(HospitalCore dbContext)
-        {
-            _dbContext = dbContext;
-        }
 
         public async Task<int> AddIngresoAsync(IngresoDto ingresoDto)
         {
@@ -33,8 +27,8 @@ namespace HospitalCore_core.Services
                     Idautorizacion = ingresoDto.Idautorizacion
                 };
 
-                _dbContext.Ingresos.Add(ingreso);
-                await _dbContext.SaveChangesAsync();
+                dbContext.Ingresos.Add(ingreso);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo("AddIngresoAsync executed successfully.");
                 return 1;
             }
@@ -49,7 +43,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var ingreso = await _dbContext.Ingresos.FindAsync(ingresoDto.IDIngreso);
+                var ingreso = await dbContext.Ingresos.FindAsync(ingresoDto.IDIngreso);
                 if (ingreso == null)
                 {
                     _logManager.LogInfo($"Ingreso with ID {ingresoDto.IDIngreso} not found.");
@@ -65,8 +59,8 @@ namespace HospitalCore_core.Services
                 ingreso.ConsultaCodigo = ingresoDto.ConsultaCodigo;
                 ingreso.Idautorizacion = ingresoDto.Idautorizacion;
 
-                _dbContext.Ingresos.Update(ingreso);
-                await _dbContext.SaveChangesAsync();
+                dbContext.Ingresos.Update(ingreso);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"UpdateIngresoAsync executed successfully for ID {ingresoDto.IDIngreso}.");
                 return 1;
             }
@@ -87,15 +81,15 @@ namespace HospitalCore_core.Services
                     return 0;
                 }
 
-                var ingreso = await _dbContext.Ingresos.FindAsync(idIngreso);
+                var ingreso = await dbContext.Ingresos.FindAsync(idIngreso);
                 if (ingreso == null)
                 {
                     _logManager.LogInfo($"Ingreso with ID {idIngreso} not found.");
                     return 0;
                 }
 
-                _dbContext.Ingresos.Remove(ingreso);
-                await _dbContext.SaveChangesAsync();
+                dbContext.Ingresos.Remove(ingreso);
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"DeleteIngresoAsync executed successfully for ID {idIngreso}.");
                 return 1;
             }
@@ -110,7 +104,7 @@ namespace HospitalCore_core.Services
         {
             try
             {
-                var ingresos = await _dbContext.Ingresos.Select(i => IngresoDto.FromModel(i)).ToListAsync();
+                var ingresos = await dbContext.Ingresos.Select(i => IngresoDto.FromModel(i)).ToListAsync();
                 _logManager.LogInfo("GetIngresosAsync executed successfully.");
                 return ingresos;
             }
@@ -131,7 +125,7 @@ namespace HospitalCore_core.Services
                     return null;
                 }
 
-                var ingreso = await _dbContext.Ingresos
+                var ingreso = await dbContext.Ingresos
                     .Where(i => i.IDIngreso == idIngreso)
                     .Select(i => IngresoDto.FromModel(i)).FirstOrDefaultAsync();
 
@@ -161,7 +155,7 @@ namespace HospitalCore_core.Services
                     return 0;
                 }
 
-                var ingreso = await _dbContext.Ingresos
+                var ingreso = await dbContext.Ingresos
                     .Include(i => i.Afecciones)
                     .FirstOrDefaultAsync(i => i.IDIngreso == idIngreso);
 
@@ -171,7 +165,7 @@ namespace HospitalCore_core.Services
                     return 0;
                 }
 
-                var afeccion = await _dbContext.Afeccions.FindAsync(idAfeccion);
+                var afeccion = await dbContext.Afeccions.FindAsync(idAfeccion);
                 if (afeccion == null)
                 {
                     _logManager.LogInfo($"Afeccion with ID {idAfeccion} not found.");
@@ -179,7 +173,7 @@ namespace HospitalCore_core.Services
                 }
 
                 ingreso.Afecciones.Add(afeccion);
-                await _dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"AddIngresoAfeccionAsync executed successfully for Ingreso ID {idIngreso} and Afeccion ID {idAfeccion}.");
                 return 1;
             }
@@ -200,7 +194,7 @@ namespace HospitalCore_core.Services
                     return 0;
                 }
 
-                var ingreso = await _dbContext.Ingresos
+                var ingreso = await dbContext.Ingresos
                     .Include(i => i.Afecciones)
                     .FirstOrDefaultAsync(i => i.IDIngreso == idIngreso);
 
@@ -218,7 +212,7 @@ namespace HospitalCore_core.Services
                 }
 
                 ingreso.Afecciones.Remove(afeccion);
-                await _dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
                 _logManager.LogInfo($"RemoveIngresoAfeccionAsync executed successfully for Ingreso ID {idIngreso} and Afeccion ID {idAfeccion}.");
                 return 1;
             }
@@ -239,7 +233,7 @@ namespace HospitalCore_core.Services
                     return new List<Afeccion>();
                 }
 
-                var ingreso = await _dbContext.Ingresos
+                var ingreso = await dbContext.Ingresos
                     .Include(i => i.Afecciones)
                     .FirstOrDefaultAsync(i => i.IDIngreso == idIngreso);
 

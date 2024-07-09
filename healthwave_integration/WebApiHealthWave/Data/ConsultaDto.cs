@@ -15,5 +15,19 @@ namespace WebApiHealthWave.Data
         public int? IDAutorizacion { get; set; }
         public string? CodigoDocumentoMedico { get; set; }
 
+        static public ConsultaDto FromModel(Consulta consulta) => new ConsultaDto
+        {
+            ConsultaCodigo = consulta.ConsultaCodigo,
+            IDConsultorio = consulta.IDConsultorio,
+            IDAutorizacion = consulta.IDAutorizacion,
+            Descripcion = consulta.Descripcion,
+            CodigoPaciente = consulta.CodigoPaciente,
+            CodigoDocumentoMedico = consulta.CodigoDocumentoMedico,
+            Fecha = consulta.Fecha,
+            Motivo = consulta.Motivo,
+            Estado = consulta.Estado,
+            Costo = consulta.Costo
+        };
+
     }
 }

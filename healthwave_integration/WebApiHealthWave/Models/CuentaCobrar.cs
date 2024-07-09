@@ -1,4 +1,6 @@
-﻿namespace WebApiHealthWave.Models
+﻿using WebApiHealthWave.Data;
+
+namespace WebApiHealthWave.Models
 {
     public class CuentaCobrar
     {
@@ -9,7 +11,7 @@
         public PerfilUsuario? PerfilUsuario { get; set; }
 
         public ICollection<Factura>? Facturas { get; set; }
-        public ICollection<Pago>? Pagos { get; set; } 
+        public ICollection<Pago>? Pagos { get; set; }
 
 
     }

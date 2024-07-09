@@ -1,12 +1,22 @@
-﻿namespace WebApiHealthWave.Models
+﻿using WebApiHealthWave.Data;
+
+namespace WebApiHealthWave.Models
 {
     public class Usuario
     {
-        public string? UsuarioCodigo { get; set; }
-        public string? DocumentoUsuario { get; set; }
-        public string? UsuarioContra { get; set; }
+        public string? UsuarioCodigo { get; set; } = null!;
+        public string? DocumentoUsuario { get; set; } = null!;
+        public string? UsuarioContra { get; set; } = null!; 
 
-        // Navigation property
-        public PerfilUsuario? PerfilUsuario { get; set; }
+        public virtual PerfilUsuario PerfilUsuario { get; set; } = null!;
+
+        public static Usuario FromDto(UsuarioDto usuarioDto)
+        {
+            return new Usuario
+            {
+                UsuarioCodigo = usuarioDto.UsuarioCodigo,
+                UsuarioContra = usuarioDto.UsuarioContra
+            };
+        }
     }
 }

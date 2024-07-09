@@ -1,7 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiHealthWave.Context;
+
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using WebApiHealthWave.Context;
+using HospitalCore_core.Services; // Importa los servicios del core
+using HospitalCore_core.Services.Interfaces; // Importa las interfaces de servicios del core
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +14,104 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 //Registrar servicio para la conexión 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
+// Configurar HttpClient para los servicios del Core
+builder.Services.AddHttpClient<IUsuarioService, UsuarioService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042"); // URL del proyecto del core
+});
+
+builder.Services.AddHttpClient<IAfeccionService, AfeccionService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042"); 
+});
+
+// Servicios
+builder.Services.AddHttpClient<IConsultaService, ConsultaService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042"); 
+});
+
+builder.Services.AddHttpClient<IAseguradoraService, AseguradoraService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042"); 
+});
+
+builder.Services.AddHttpClient<IAutorizacionService, AutorizacionService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042");
+});
+
+builder.Services.AddHttpClient<IConsultorioService, ConsultorioService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042");
+});
+
+builder.Services.AddHttpClient<ICuentaCobrarService, CuentaCobrarService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042");
+});
+
+builder.Services.AddHttpClient<IFacturaService, FacturaService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042");
+});
+
+builder.Services.AddHttpClient<IIngresoService, IngresoService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042");
+});
+
+builder.Services.AddHttpClient<IMetodoDePagoService, MetodoDePagoService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042");
+});
+
+builder.Services.AddHttpClient<IPagoService, PagoService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042");
+});
+
+builder.Services.AddHttpClient<IProductoService, ProductoService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042");
+});
+
+builder.Services.AddHttpClient<ISalaService, SalaService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042");
+});
+
+builder.Services.AddHttpClient<IServicioService, ServicioService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042");
+});
+
+builder.Services.AddHttpClient<ITipoServicioService, TipoServicioService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042");
+});
+
+builder.Services.AddHttpClient<IUsuarioService, UsuarioService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5042");
+});
+
+
+
 builder.Services.AddControllers();
+
+// Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowCoreApp",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:5042") 
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -30,6 +130,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowCoreApp"); // Aplicar la política CORS
 
 app.UseAuthorization();
 
@@ -52,3 +154,4 @@ public class HideSchemaDocumentFilter : IDocumentFilter
         }
     }
 }
+

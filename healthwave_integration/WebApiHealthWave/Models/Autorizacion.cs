@@ -1,4 +1,6 @@
-﻿namespace WebApiHealthWave.Models
+﻿using WebApiHealthWave.Data;
+
+namespace WebApiHealthWave.Models
 {
     public class Autorizacion
     {
@@ -12,7 +14,12 @@
         public ICollection<Ingreso>? Ingresos { get; set; }
         public ICollection<FacturaServicio>? FacturaServicios { get; set; } 
 
-        public ICollection<FacturaProducto>? FacturaProductos { get; set; } 
+        public ICollection<FacturaProducto>? FacturaProductos { get; set; }
+
+        public virtual ICollection<Consulta> Consultas { get; set; } = new List<Consulta>();
+
+
+
 
     }
 }

@@ -12,9 +12,14 @@ namespace WebApiHealthWave.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class IngresoAfeccionController(AppDbContext context) : ControllerBase
+    public class IngresoAfeccionController : ControllerBase
     {
-        private readonly AppDbContext _context = context;
+        private readonly AppDbContext _context;
+
+        public IngresoAfeccionController(AppDbContext context)
+        {
+            _context = context;
+        }
 
         // GET: api/IngresoAfeccion
         [HttpGet]

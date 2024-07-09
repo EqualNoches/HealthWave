@@ -1,19 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApiHealthWave.Context;
-using WebApiHealthWave.Models;
-using WebApiHealthWave.Data;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebApiHealthWave.Context;
+using WebApiHealthWave.Models;
 
 namespace WebApiHealthWave.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SalaController(AppDbContext context) : ControllerBase
+    public class SalaController : ControllerBase
     {
-        private readonly AppDbContext _context = context;
+        private readonly AppDbContext _context;
+
+        public SalaController(AppDbContext context)
+        {
+            _context = context;
+        }
 
         // GET: api/Sala
         [HttpGet]
@@ -36,38 +42,15 @@ namespace WebApiHealthWave.Controllers
             return sala;
         }
 
-        // POST: api/Sala
-        [HttpPost]
-        public async Task<ActionResult<Sala>> PostSala(SalaDto salaDto)
-        {
-            var sala = new Sala
-            {
-                Estado = salaDto.Estado
-            };
-
-            _context.Salas.Add(sala);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetSala", new { id = sala.NumSala }, sala);
-        }
-
         // PUT: api/Sala/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSala(int id, SalaDto salaDto)
+        public async Task<IActionResult> PutSala(int id, Sala sala)
         {
-            if (id != salaDto.NumSala)
+            if (id != sala.NumSala)
             {
                 return BadRequest();
             }
-
-            var sala = await _context.Salas.FindAsync(id);
-
-            if (sala == null)
-            {
-                return NotFound();
-            }
-
-            sala.Estado = salaDto.Estado;
 
             _context.Entry(sala).State = EntityState.Modified;
 
@@ -88,6 +71,17 @@ namespace WebApiHealthWave.Controllers
             }
 
             return NoContent();
+        }
+
+        // POST: api/Sala
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Sala>> PostSala(Sala sala)
+        {
+            _context.Salas.Add(sala);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetSala", new { id = sala.NumSala }, sala);
         }
 
         // DELETE: api/Sala/5

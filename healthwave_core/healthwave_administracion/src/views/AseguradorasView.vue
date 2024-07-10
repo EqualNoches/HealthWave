@@ -52,7 +52,7 @@
         </div>
       </div>
       <div class="flex justify-content-end gap-2">
-        <Button type="button" label="Cancelar" severity="secondary" @click="visible = false"></Button>
+        <Button type="button" label="Cancelar" severity="secondary" @click="mostrarFormulario = false"></Button>
         <Button type="button" label="Guardar" @click="Guardar()"></Button>
       </div>
     </Dialog>
@@ -102,7 +102,7 @@ export default {
           correo: "asdasdsada",
           autorizacions: [],
           servicios: []
-        },
+        }
       ];
 
       const response = await api.get('api/Aseguradora/get');

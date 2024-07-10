@@ -19,9 +19,13 @@
       </template>
       <template #empty> No se han encontrado consultas. </template>
       <Column field="consultaCodigo" header="#" style="width: 5%" sortable></Column>
-      <Column field="nombre" header="Nombre" sortable></Column>
-      <Column field="descripcion" header="Descripción" sortable></Column>
+      <Column field="documentoPaciente" header="Documento del Paciente" sortable></Column>
+      <Column field="documentoMedico" header="Documento del Médico" sortable></Column>
+      <Column field="idConsultorio" header="# de Consultorio" sortable></Column>
+      <Column field="idAutorizacion" header="# de Autorización" sortable></Column>
+      <Column field="fecha" header="Fecha" sortable></Column>
       <Column field="costo" header="Costo" sortable></Column>
+      <Column field="estado" header="Estado" sortable></Column>
       <Column header="" style="width: 5%">
         <template #body="slotProps">
           <div class="flex justify-content-center gap-2">
@@ -31,28 +35,44 @@
         </template>
       </Column>
     </DataTable>
-    <Dialog v-model:visible="mostrarFormulario" modal :header="(modoEdicion) ? 'Editar consulta' : 'Nuevo consulta'"
+    <Dialog v-model:visible="mostrarFormulario" modal :header="(modoEdicion) ? 'Editar consulta' : 'Nueva consulta'"
       :style="{ width: '50vw' }" :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
       <div class="grid mb-2">
-        <div class="col-12">
-          <label class="font-semibold mb-2 w-full">Nombre</label>
-          <InputText v-model="model.nombre" class="w-full" />
+        <div class="col-12 md:col-6">
+          <label class="font-semibold mb-2 w-full">Documento del paciente</label>
+          <InputText v-model="model.documentoPaciente" class="w-full" />
         </div>
         <div class="col-12 md:col-6">
-          <label class="font-semibold mb-2 w-full">Teléfono</label>
-          <InputMask id="telefono" v-model="model.telefono" mask="(999) 999-9999" placeholder="(999) 999-9999" fluid class="w-full" />
+          <label class="font-semibold mb-2 w-full">Documento del médico</label>
+          <InputText v-model="model.documentoMedico" class="w-full" />
         </div>
         <div class="col-12 md:col-6">
-          <label class="font-semibold mb-2 w-full">Correo</label>
-          <InputText v-model="model.correo" class="w-full" />
+          <label class="font-semibold mb-2 w-full">Consultorio</label>
+          <InputText v-model="model.idConsultorio" class="w-full" />
         </div>
-        <div class="col-12">
-          <label class="font-semibold mb-2 w-full">Dirección</label>
-          <Textarea v-model="model.dirección" autoResize rows="4" cols="30" class="w-full" />
+        <div class="col-12 md:col-6">
+          <label class="font-semibold mb-2 w-full">Fecha</label>
+          <Calendar v-model="model.fecha" hourFormat="12" placeholder="dd/mm/yy" class="w-full" />
+        </div>
+        <div class="col-12 md:col-6">
+          <label class="font-semibold mb-2 w-full">Costo</label>
+          <InputNumber v-model="model.costo" inputId="integeronly" fluid class="w-full" />
+        </div>
+        <div class="col-12  md:col-6">
+          <label class="font-semibold mb-2 w-full">Estado</label>
+          <InputText v-model="model.estado" class="w-full" />
+        </div>
+        <div class="col-12 md:col-6">
+          <label class="font-semibold mb-2 w-full">Motivo</label>
+          <Textarea v-model="model.motivo" autoResize rows="4" cols="30" class="w-full" />
+        </div>
+        <div class="col-12 md:col-6">
+          <label class="font-semibold mb-2 w-full">Comentarios</label>
+          <Textarea v-model="model.comentarios" autoResize rows="4" cols="30" class="w-full" />
         </div>
       </div>
       <div class="flex justify-content-end gap-2">
-        <Button type="button" label="Cancelar" severity="secondary" @click="visible = false"></Button>
+        <Button type="button" label="Cancelar" severity="secondary" @click="mostrarFormulario = false"></Button>
         <Button type="button" label="Guardar" @click="Guardar()"></Button>
       </div>
     </Dialog>
@@ -79,11 +99,15 @@ export default {
       consultas: [],
       model: {
         consultaCodigo: 0,
-        nombre: "string",
-        descripcion: "string",
-        idTipoConsulta: 0,
-        costo: 0,
-        idAseguradora: 0
+        documentoPaciente: "",
+        documentoMedico: "",
+        idConsultorio: 0,
+        idAutorizacion: 0,
+        fecha: "",
+        motivo: "",
+        comentarios: "",
+        estado: "",
+        costo: 0
       },
       mostrarFormulario: false,
       modoEdicion: false,
@@ -94,26 +118,38 @@ export default {
     async getConsultas() {
       this.consultas = [
         {
-          consultaCodigo: 0,
-          documentoPaciente: "string",
-          documentoMedico: "string",
-          idConsultorio: 0,
-          idAutorizacion: 0,
-          fecha: "2024-07-07",
-          motivo: "string",
-          comentarios: "string",
-          estado: "string",
-          costo: 0
-        }
+          consultaCodigo: 1,
+          documentoPaciente: "123456789",
+          documentoMedico: "987654321",
+          idConsultorio: 1,
+          idAutorizacion: 1,
+          fecha: "2022-01-01",
+          motivo: "Consulta de rutina",
+          comentarios: "Sin comentarios",
+          estado: "Pendiente",
+          costo: 50
+        },
+        {
+          consultaCodigo: 1,
+          documentoPaciente: "123456789",
+          documentoMedico: "987654321",
+          idConsultorio: 1,
+          idAutorizacion: 1,
+          fecha: "2022-01-01",
+          motivo: "Consulta de rutina",
+          comentarios: "Sin comentarios",
+          estado: "Pendiente",
+          costo: 50
+        },
       ];
 
-      const response = await api.get('api/Consulta/get');
-      if (response.data) {
+      const response = await api.get('api/Consulta/Get');
+      if (response.data && response.data.data != undefined) {
         this.consultas = response.data.data;
       }
     },
     async Guardar() {
-      const response = await api[this.modoEdicion ? 'put' : 'post'](`api/Consulta/${this.modoEdicion ? 'update' : 'add'}`, this.model);
+      const response = await api[this.modoEdicion ? 'put' : 'post'](`api/Consulta/${this.modoEdicion ? `update` : 'add'}`, this.model);
       if (response.status === 200) {
         const result = response.data;
         push.success("Se ha guardado la consulta exitosamente");
@@ -154,11 +190,15 @@ export default {
     Nuevo() {
       this.model = {
         consultaCodigo: 0,
-        nombre: "string",
-        descripcion: "string",
-        idTipoConsulta: 0,
-        costo: 0,
-        idAseguradora: 0
+        documentoPaciente: "",
+        documentoMedico: "",
+        idConsultorio: 0,
+        idAutorizacion: 0,
+        fecha: "",
+        motivo: "",
+        comentarios: "",
+        estado: "",
+        costo: 0
       };
       this.modoEdicion = false;
       this.mostrarFormulario = true;

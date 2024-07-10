@@ -8,7 +8,10 @@ import api from '@/utilities/api';
 import UsuariosView from '@/views/UsuariosView.vue';
 import ConsultoriosView from '@/views/ConsultoriosView.vue';
 import AseguradorasView from '@/views/AseguradorasView.vue';
-import ConsultasView  from '@/views/ConsultasView.vue';
+import MetodosPagosView from '@/views/MetodosPagosView.vue';
+import ProductosView from '@/views/ProductosView.vue';
+import CuentasPorCobrarView from '@/views/CuentasPorCobrarView.vue';
+import ConsultasView from '@/views/ConsultasView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -55,6 +58,30 @@ const router = createRouter({
       }
     },
     {
+      path: '/MetodosDePago',
+      name: 'MetodosPagos',
+      component: MetodosPagosView,
+      meta: {
+        authenticated: true,
+      }
+    },
+    {
+      path: '/Productos',
+      name: 'Productos',
+      component: ProductosView,
+      meta: {
+        authenticated: true,
+      }
+    },
+    {
+      path: '/CuentasPorCobrar',
+      name: 'CuentasPorCobrar',
+      component: CuentasPorCobrarView,
+      meta: {
+        authenticated: true,
+      }
+    },
+    {
       path: '/Consultas',
       name: 'Consultas',
       component: ConsultasView,
@@ -62,6 +89,7 @@ const router = createRouter({
         authenticated: true,
       }
     },
+
     { path: "/:pathMatch(.*)*", name: "404", component: NotFound, authenticated: false, administrador: true },
   ]
 })
@@ -99,7 +127,7 @@ async function isAuthenticated() {
   if (localStorage.getItem("token") == null) return false;
   
   try {
-    store.commit('setUser', { nombreUsuario: localStorage.getItem('user'), nombrePerfil: "Administrador", nombres: "Ronnie Ismael", apellidos: "Difo de Leon"})
+    store.commit('setUser', { nombreUsuario: localStorage.getItem('user'), nombrePerfil: "Administrador", nombres: "Nombre", apellidos: "Apellido"})
     return true;
     
     // const response = await api.get("/api/Account");

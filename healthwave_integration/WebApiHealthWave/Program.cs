@@ -1,102 +1,36 @@
 using Microsoft.EntityFrameworkCore;
-
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApiHealthWave.Context;
-using HospitalCore_core.Services; // Importa los servicios del core
-using HospitalCore_core.Services.Interfaces; // Importa las interfaces de servicios del core
+using HospitalCore_core.Services;
+using HospitalCore_core.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 // Add services to the container.
-// Crear variable para la cadena de conexión 
+// Crear variable para la cadena de conexiÃ³n 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//Registrar servicio para la conexión 
+// Registrar servicio para la conexiÃ³n 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
 // Configurar HttpClient para los servicios del Core
-builder.Services.AddHttpClient<IUsuarioService, UsuarioService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042"); // URL del proyecto del core
-});
-
-builder.Services.AddHttpClient<IAfeccionService, AfeccionService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042"); 
-});
-
-// Servicios
-builder.Services.AddHttpClient<IConsultaService, ConsultaService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042"); 
-});
-
-builder.Services.AddHttpClient<IAseguradoraService, AseguradoraService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042"); 
-});
-
-builder.Services.AddHttpClient<IAutorizacionService, AutorizacionService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042");
-});
-
-builder.Services.AddHttpClient<IConsultorioService, ConsultorioService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042");
-});
-
-builder.Services.AddHttpClient<ICuentaCobrarService, CuentaCobrarService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042");
-});
-
-builder.Services.AddHttpClient<IFacturaService, FacturaService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042");
-});
-
-builder.Services.AddHttpClient<IIngresoService, IngresoService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042");
-});
-
-builder.Services.AddHttpClient<IMetodoDePagoService, MetodoDePagoService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042");
-});
-
-builder.Services.AddHttpClient<IPagoService, PagoService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042");
-});
-
-builder.Services.AddHttpClient<IProductoService, ProductoService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042");
-});
-
-builder.Services.AddHttpClient<ISalaService, SalaService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042");
-});
-
-builder.Services.AddHttpClient<IServicioService, ServicioService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042");
-});
-
-builder.Services.AddHttpClient<ITipoServicioService, TipoServicioService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042");
-});
-
-builder.Services.AddHttpClient<IUsuarioService, UsuarioService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5042");
-});
-
-
+builder.Services.AddHttpClient<IUsuarioService, UsuarioService>();
+builder.Services.AddHttpClient<IAfeccionService, AfeccionService>();
+builder.Services.AddHttpClient<IConsultaService, ConsultaService>();
+builder.Services.AddHttpClient<IAseguradoraService, AseguradoraService>();
+builder.Services.AddHttpClient<IAutorizacionService, AutorizacionService>();
+builder.Services.AddHttpClient<IConsultorioService, ConsultorioService>();
+builder.Services.AddHttpClient<ICuentaCobrarService, CuentaCobrarService>();
+builder.Services.AddHttpClient<IFacturaService, FacturaService>();
+builder.Services.AddHttpClient<IIngresoService, IngresoService>();
+builder.Services.AddHttpClient<IMetodoDePagoService, MetodoDePagoService>();
+builder.Services.AddHttpClient<IPagoService, PagoService>();
+builder.Services.AddHttpClient<IProductoService, ProductoService>();
+builder.Services.AddHttpClient<ISalaService, SalaService>();
+builder.Services.AddHttpClient<IServicioService, ServicioService>();
+builder.Services.AddHttpClient<ITipoServicioService, TipoServicioService>();
 
 builder.Services.AddControllers();
 
@@ -106,7 +40,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowCoreApp",
         builder =>
         {
-            builder.WithOrigins("http://localhost:5042") 
+            builder.WithOrigins("http://localhost:5042")
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });
@@ -131,7 +65,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowCoreApp"); // Aplicar la política CORS
+app.UseCors("AllowCoreApp"); // Aplicar la polÃ­tica CORS
 
 app.UseAuthorization();
 
@@ -139,7 +73,7 @@ app.MapControllers();
 
 app.Run();
 
-// Clase para ocultar esquemas específicos en Swagger
+// Clase para ocultar esquemas especÃ­ficos en Swagger
 public class HideSchemaDocumentFilter : IDocumentFilter
 {
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
@@ -154,4 +88,3 @@ public class HideSchemaDocumentFilter : IDocumentFilter
         }
     }
 }
-

@@ -1,0 +1,91 @@
+.login-background {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  background-image: url("/img_hospital.jpg");
+  border-radius: 5px; /* Radio del borde */
+  overflow: hidden; /* Para que el contenido respete el borde redondeado */
+}
+
+.login-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box {
+  background-color: rgba(0, 0, 0, 0.7); /* Ajustar la opacidad del fondo */
+  padding: 40px; /* Aumentar el padding */
+  border-radius: 10px;
+  text-align: center;
+  color: #fff;
+  max-width: 600px; /* Limitar el ancho máximo */
+  width: 100%;
+}
+
+.login-box h2 {
+  margin-bottom: 20px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  text-align: left; /* Alinear a la izquierda */
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+  color: #fff; /* Texto blanco */
+}
+
+.input-group input::placeholder {
+  color: #ccc; /* Color de los placeholders */
+}
+
+.forgot-password {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.forgot-password a {
+  color: #9acd32;
+  text-decoration: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #9acd32;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #7caf25;
+}
+
+.register {
+  margin-top: 20px;
+}
+
+.register a {
+  color: #9acd32;
+  text-decoration: none;
+}

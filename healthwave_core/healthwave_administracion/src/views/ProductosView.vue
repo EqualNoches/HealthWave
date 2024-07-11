@@ -121,7 +121,7 @@ export default {
 
       const response = await api.get('api/Producto/get');
       if (response.data) {
-        this.productos = response.data.data;
+        this.productos = response.data;
       }
     },
     async Guardar() {

@@ -95,11 +95,11 @@ export default {
           telefono: "string",
           consultaCodigo: []
         }
-      ];
+      ];  
 
-      const response = await api.get('api/Consultorio/get');
+      const response = await api.get('api/Consultorio');
       if (response.data) {
-        this.consultorios = response.data.data;
+        this.consultorios = response.data;
       }
     },
     async Guardar() {

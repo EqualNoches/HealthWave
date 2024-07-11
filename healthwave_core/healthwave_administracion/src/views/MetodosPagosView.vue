@@ -99,7 +99,7 @@ export default {
 
       const response = await api.get('api/MetodoDePago/GET');
       if (response.data) {
-        this.metodosPago = response.data.data;
+        this.metodosPago = response.data;
       }
     },
     async Guardar() {

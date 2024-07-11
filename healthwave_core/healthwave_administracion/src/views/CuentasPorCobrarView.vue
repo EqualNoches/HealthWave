@@ -109,7 +109,7 @@ export default {
 
       const response = await api.get('api/CuentaCobrar/Get');
       if (response.data) {
-        this.cuentasPorCobrar = response.data.data;
+        this.cuentasPorCobrar = response.data;
       }
     },
     async Guardar() {

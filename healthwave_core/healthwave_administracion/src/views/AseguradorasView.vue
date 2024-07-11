@@ -107,7 +107,7 @@ export default {
 
       const response = await api.get('api/Aseguradora/get');
       if (response.data) {
-        this.aseguradoras = response.data.data;
+        this.aseguradoras = response.data;
       }
     },
     async Guardar() {

@@ -16,7 +16,7 @@
             </IconField>
           </div>
         </div>
-      </template>
+      </template> 
       <template #empty> No se han encontrado usuarios. </template>
       <Column field="codigoDocumento" header="Código documento" sortable></Column>
       <Column field="numLicenciaMedica" header="No. Licencia Médica" sortable></Column>
@@ -70,7 +70,7 @@
         </div>
         <div class="col-12 md:col-6">
           <label class="font-semibold mb-2 w-full">Fecha de Nacimiento</label>
-          <Calendar v-model="model.fechaNacimiento" hourFormat="12" placeholder="dd/mm/yy" class="w-full" />
+          <DatePicker v-model="model.fechaNacimiento" hourFormat="12" placeholder="dd/mm/yy" class="w-full" />
         </div>
         <div class="col-12 md:col-6">
           <label class="font-semibold mb-2 w-full">Género</label>
@@ -139,7 +139,7 @@ export default {
       modoEdicion: false,
       tiposDocumento: [
         { label: "Identificación", value: "I" },
-        { label: "Pasaporte", value: "P" }
+        { label: "Pasaporte", value: "P" },
       ],
       generos: [
         { label: "Masculino", value: "M" },
@@ -147,7 +147,10 @@ export default {
       ],
       roles: [
         { label: "Administrador", value: "A" },
-        { label: "Paciente", value: "P" }
+        { label: "Paciente", value: "P" },
+        { label: "Medico", value: "M"},
+        { label: "Enfermero", value: "E"},
+        { label: "Caja", value: "C"}
       ]
     };
   },
@@ -172,9 +175,10 @@ export default {
         }
       ];
 
-      const response = await api.get('api/Usuario');
+      const response = await api.get('api/Usuario/get');
+      console.log(response)
       if (response.data) {
-        this.usuarios = response.data.data;
+        this.usuarios = response.data ;
       }
     },
     async Guardar() {

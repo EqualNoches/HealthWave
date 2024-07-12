@@ -129,6 +129,8 @@ export default {
       if (response.status === 200) {
         const result = response.data;
         push.success("Se ha guardado la producto exitosamente");
+        this.getServicios(); // Refresh the list of services
+        this.mostrarFormulario = false; // Close the dialog
       } else {
         console.error('Error al agregar la producto:', response.status, response.statusText);
         push.warning("Los datos ingresados no son válidos");

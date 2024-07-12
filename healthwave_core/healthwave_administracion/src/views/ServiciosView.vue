@@ -2,11 +2,11 @@
   <div class="border-round-lg border-1 p-2 card h-full">
     <DataTable
       v-model:filters="filters"
-      :value="Servicios"
+      :value="servicios"
       paginator
       :rows="5"
       :rowsPerPageOptions="[5, 10, 20, 50]"
-      paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+      paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink NextPageLink LastPageLink"
       currentPageReportTemplate="{first} a {last} de {totalRecords}"
       class="h-full"
     >
@@ -19,7 +19,7 @@
               label="Agregar"
               icon="pi pi-plus"
               size="normal"
-              @click="Nuevo()"
+              @click="Nuevo"
             />
             <IconField>
               <InputIcon>
@@ -36,21 +36,19 @@
       </template>
       <template #empty> No se han encontrado Servicios. </template>
       <Column
-        field="ServicioCodigo"
+        field="servicioCodigo"
         header="#"
         sortable
         style="width: 5%"
       ></Column>
-      <Column 
-      field="Nombre" header="Nombre" sortable
-      ></Column>
-      <Column field="Descripcion" header="Descripción" sortable></Column>
+      <Column field="nombre" header="Nombre" sortable></Column>
+      <Column field="descripcion" header="Descripción" sortable></Column>
       <Column
-        field="IDTipoServicio"
+        field="idTipoServicio"
         header="Tipo de servicio"
         sortable
       ></Column>
-      <Column field="Costo" header="Costo" sortable></Column>
+      <Column field="costo" header="Costo" sortable></Column>
       <Column
         field="idAseguradora"
         header="# Id de Aseguradora"
@@ -69,7 +67,7 @@
             <Button
               icon="pi pi-trash"
               severity="danger"
-              @click="ConfirmarEliminar($event, slotProps.data.idConsultorio)"
+              @click="ConfirmarEliminar($event, slotProps.data.servicioCodigo)"
               type="button"
               text
             />
@@ -84,26 +82,25 @@
       :style="{ width: '50vw' }"
       :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
     >
-    <div class="grid mb-2">
+      <div class="grid mb-2">  
         <div class="col-12 md:col-6">
-          <label class="font-semibold mb-2 w-full"
-          >Codigo del Servicio</label
-          >
-          <InputText v-model="model.servicioCodigo" class="w-full" />
-        </div>
-        <div class="col-12 md:col-6">
-          <label class="font-semibold mb-2 w-full"
-          >Nombre del Servicio</label
-          >
-          <InputText v-model="model.nombre" class="w-f  ull" />
+          <label class="font-semibold mb-2 w-full">Nombre del Servicio</label>
+          <InputText v-model="model.nombre" class="w-full" />
         </div>
         <div class="col-12 md:col-6">
           <label class="font-semibold mb-2 w-full">Descripcion</label>
-          <InputMask id="telefono" v-model="model.descripcion" class="w-full" />
+          <InputText v-model="model.descripcion" class="w-full" />
         </div>
         <div class="col-12">
           <label class="font-semibold mb-2 w-full">Tipo de servicio</label>
-          <Textarea v-model="model.idTipoServicio" class="w-full" />
+          <Dropdown
+            v-model="model.idTipoServicio"
+            :options="tipoServicios"
+            optionLabel="nombre"
+            optionValue="idTipoServicio"
+            class="w-full"
+            placeholder="Seleccione un tipo de servicio"
+          />
         </div>
         <div class="col-12 md:col-6">
           <label class="font-semibold mb-2 w-full">Costo</label>
@@ -115,7 +112,7 @@
           />
         </div>
         <div>
-        <label class="font-semibold mb-2 w-full">#Id Aseguradora</label>
+          <label class="font-semibold mb-2 w-full">#Id Aseguradora</label>
           <InputNumber
             v-model="model.idAseguradora"
             inputId="integeronly"
@@ -147,6 +144,7 @@ export default {
   name: "ServiciosView",
   created() {
     this.getServicios();
+    this.getTipoServicios();
   },
   data() {
     return {
@@ -154,11 +152,12 @@ export default {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       },
       servicios: [],
+      tipoServicios: [],
       model: {
         servicioCodigo: 0,
         nombre: "",
         descripcion: "",
-        idTiposervicio: "",
+        idTipoServicio: "",
         costo: 0,
         idAseguradora: 0,
       },
@@ -166,7 +165,6 @@ export default {
       modoEdicion: false,
     };
   },
-  props: {},
   methods: {
     async getServicios() {
       this.servicios = [
@@ -193,6 +191,15 @@ export default {
         this.servicios = response.data;
       }
     },
+    async getTipoServicios() {
+      const response = await api.get("api/TipoServicio/get");
+      if (response.data) {
+        this.tipoServicios = response.data;
+      } else {
+        // Handle error
+        console.error("Error fetching TipoServicios");
+      }
+    },
     async Guardar() {
       const response = await api[this.modoEdicion ? "put" : "post"](
         `api/Servicios/${this.modoEdicion ? "update" : "post"}`,
@@ -200,10 +207,12 @@ export default {
       );
       if (response.status === 200) {
         const result = response.data;
-        push.success("Se ha guardado el consultorio exitosamente");
+        push.success("Se ha guardado el servicio exitosamente");
+        this.getServicios(); // Refresh the list of services
+        this.mostrarFormulario = false; // Close the dialog
       } else {
         console.error(
-          "Error al agregar el consultorio:",
+          "Error al agregar el servicio:",
           response.status,
           response.statusText
         );
@@ -217,6 +226,7 @@ export default {
       if (response.status === 200) {
         const result = response.data;
         push.success("Se ha eliminado el consultorio exitosamente");
+        this.getServicios(); // Refresh the list of services
       } else {
         console.error(
           "Error al eliminar el consultorio:",
@@ -258,7 +268,7 @@ export default {
       this.mostrarFormulario = true;
     },
     Editar(model) {
-      this.model = Object.assign(this.model, model);
+      this.model = Object.assign({}, model);
       this.modoEdicion = true;
       this.mostrarFormulario = true;
     },

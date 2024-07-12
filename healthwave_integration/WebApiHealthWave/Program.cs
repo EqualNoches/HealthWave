@@ -1,17 +1,51 @@
 using Microsoft.EntityFrameworkCore;
-using WebApiHealthWave.Context;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using WebApiHealthWave.Context;
+using HospitalCore_core.Services;
+using HospitalCore_core.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 // Add services to the container.
-// Crear variable para la cadena de conexiÛn 
+// Crear variable para la cadena de conexi√≥n 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-//Registrar servicio para la conexiÛn 
+// Registrar servicio para la conexi√≥n 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
+// Configurar HttpClient para los servicios del Core
+builder.Services.AddHttpClient<IUsuarioService, UsuarioService>();
+builder.Services.AddHttpClient<IAfeccionService, AfeccionService>();
+builder.Services.AddHttpClient<IConsultaService, ConsultaService>();
+builder.Services.AddHttpClient<IAseguradoraService, AseguradoraService>();
+builder.Services.AddHttpClient<IAutorizacionService, AutorizacionService>();
+builder.Services.AddHttpClient<IConsultorioService, ConsultorioService>();
+builder.Services.AddHttpClient<ICuentaCobrarService, CuentaCobrarService>();
+builder.Services.AddHttpClient<IFacturaService, FacturaService>();
+builder.Services.AddHttpClient<IIngresoService, IngresoService>();
+builder.Services.AddHttpClient<IMetodoDePagoService, MetodoDePagoService>();
+builder.Services.AddHttpClient<IPagoService, PagoService>();
+builder.Services.AddHttpClient<IProductoService, ProductoService>();
+builder.Services.AddHttpClient<ISalaService, SalaService>();
+builder.Services.AddHttpClient<IServicioService, ServicioService>();
+builder.Services.AddHttpClient<ITipoServicioService, TipoServicioService>();
+
 builder.Services.AddControllers();
+
+// Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowCoreApp",
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:5042")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -31,13 +65,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowCoreApp"); // Aplicar la pol√≠tica CORS
+
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
 
-// Clase para ocultar esquemas especÌficos en Swagger
+// Clase para ocultar esquemas espec√≠ficos en Swagger
 public class HideSchemaDocumentFilter : IDocumentFilter
 {
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)

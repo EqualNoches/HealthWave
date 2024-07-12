@@ -8,5 +8,14 @@ namespace WebApiHealthWave.Data
         public string? Nombre { get; set; }
         public string? Descripción { get; set; }
 
+        public static AfeccionDto FromModel(Afeccion afeccion)
+        {
+            return new AfeccionDto
+            {
+                IDAfeccion = afeccion.IDAfeccion,
+                Nombre = afeccion.Nombre
+            };
+        }
+
     }
 }

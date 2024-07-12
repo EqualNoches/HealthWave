@@ -14,7 +14,7 @@ namespace HospitalCore_core.Controllers
         private readonly LogManager<ConsultaController> _logManager = new();
 
         [HttpPost("add")]
-        public async Task<ActionResult<int>> CrearConsulta([FromQuery] ConsultaDto consulta)
+        public async Task<ActionResult<int>> CrearConsulta([FromBody ] ConsultaDto consulta)
         {
             try
             {

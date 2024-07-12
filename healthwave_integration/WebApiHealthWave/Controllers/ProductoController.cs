@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApiHealthWave.Context;
@@ -10,9 +12,14 @@ namespace WebApiHealthWave.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductoController(AppDbContext context) : ControllerBase
+    public class ProductoController : ControllerBase
     {
-        private readonly AppDbContext _context = context;
+        private readonly AppDbContext _context;
+
+        public ProductoController(AppDbContext context)
+        {
+            _context = context;
+        }
 
         // GET: api/Producto
         [HttpGet]

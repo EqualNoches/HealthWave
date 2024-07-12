@@ -1,4 +1,6 @@
-﻿namespace WebApiHealthWave.Models
+﻿using WebApiHealthWave.Data;
+
+namespace WebApiHealthWave.Models
 {
     public class FacturaServicio
     {
@@ -11,5 +13,20 @@
         public Factura? Factura { get; set; }
         public Producto? Producto { get; set; }
         public Autorizacion? Autorizacion { get; set; }
+
+      
+
+        public static FacturaServicio FromDto(FacturaServicioDto facturaServicioDto)
+        {
+            return new FacturaServicio
+            {
+                FacturaCodigoServicio = facturaServicioDto.FacturaCodigoServicio,
+                IDProducto = facturaServicioDto.IDProducto,
+                IDAutorizacion = facturaServicioDto.IDAutorizacion,
+                Costo = facturaServicioDto.Costo,
+                ServicioCodigo = facturaServicioDto.ServicioCodigo
+            };
+        }
+
     }
 }

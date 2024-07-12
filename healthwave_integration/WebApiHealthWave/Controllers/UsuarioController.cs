@@ -12,9 +12,14 @@ namespace WebApiHealthWave.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuarioController(AppDbContext context) : ControllerBase
+    public class UsuarioController : ControllerBase
     {
-        private readonly AppDbContext _context = context;
+        private readonly AppDbContext _context;
+
+        public UsuarioController(AppDbContext context)
+        {
+            _context = context;
+        }
 
         // GET: api/Usuario
         [HttpGet]
@@ -71,7 +76,7 @@ namespace WebApiHealthWave.Controllers
         // POST: api/Usuario
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
+        public async Task<ActionResult<Usuario>> PostUsuario(Usuario? usuario)
         {
             _context.Usuarios.Add(usuario);
             try
@@ -80,7 +85,7 @@ namespace WebApiHealthWave.Controllers
             }
             catch (DbUpdateException)
             {
-                if (UsuarioExists(usuario.UsuarioCodigo ?? String.Empty))
+                if (UsuarioExists(usuario.UsuarioCodigo))
                 {
                     return Conflict();
                 }

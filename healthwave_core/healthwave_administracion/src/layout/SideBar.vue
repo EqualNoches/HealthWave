@@ -24,7 +24,7 @@
             <div class="flex align-items-center gap-1">
               <Avatar icon="pi pi-user" class="mr-2" size="large" />
               <span class="flex flex-column text-left justify-content-start align-content-center"  v-if="$store.state.user != {}">
-                <span class="font-medium">{{ getFirstLastName($store.state.user.nombres, $store.state.user.apellidos) }}</span>
+                <span class="font-medium">{{ $store.state.user.nombreUsuario }}</span>
                 <span class="text-sm font-light">{{ $store.state.user.nombrePerfil}}</span>
               </span>
               <span class="flex flex-column text-left justify-content-start align-content-center" v-else>
@@ -78,23 +78,28 @@ export default {
               path: "/Aseguradoras",
             },
             {
-              label: "Servicios",
-              icon: "fas fa-laptop-medical",
+              label: "Metodos de Pago",
+              icon: "fas fa-credit-card",
               shortcut: " ",
-              path: "/Servicios",
+              path: "/MetodosDePago",
+            },
+            {
+              label: "Productos",
+              icon: "fas fa-boxes-stacked",
+              shortcut: " ",
+              path: "/Productos",
+            },
+            {
+              label: "Cuentas por Cobrar",
+              icon: "fas fa-cash-register",
+              shortcut: " ",
+              path: "/CuentasPorCobrar",
             },
             {
               label: "Consultas",
               icon: "fas fa-file-medical",
               shortcut: " ",
               path: "/Consultas",
-            }
-            ,
-            {
-              label: "Productos",
-              icon: "fas fa-file-medical",
-              shortcut: " ",
-              path: "/Productos",
             }
           ]
         },

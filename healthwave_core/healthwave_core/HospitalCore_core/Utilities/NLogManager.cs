@@ -20,7 +20,7 @@ public class LogManager<T>
     {
         var config = new LoggingConfiguration();
     
-        var logfile = new FileTarget("logfile") { FileName = "HospitalCore_core.log" };
+        var logfile = new FileTarget("logfile") { FileName = "HealthWave.log" };
         var logconsole = new ConsoleTarget("logconsole");
     
         config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, logconsole);

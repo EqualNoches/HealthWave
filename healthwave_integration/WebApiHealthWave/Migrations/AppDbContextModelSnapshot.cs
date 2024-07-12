@@ -22,6 +22,36 @@ namespace WebApiHealthWave.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("AfeccionConsulta", b =>
+                {
+                    b.Property<int>("ConsultaCodigo")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdafeccionsIDAfeccion")
+                        .HasColumnType("int");
+
+                    b.HasKey("ConsultaCodigo", "IdafeccionsIDAfeccion");
+
+                    b.HasIndex("IdafeccionsIDAfeccion");
+
+                    b.ToTable("AfeccionConsulta");
+                });
+
+            modelBuilder.Entity("PerfilUsuarioServicio", b =>
+                {
+                    b.Property<string>("CodigoPacientesCodigoDocumento")
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("ServicioCodigosServicioCodigo")
+                        .HasColumnType("int");
+
+                    b.HasKey("CodigoPacientesCodigoDocumento", "ServicioCodigosServicioCodigo");
+
+                    b.HasIndex("ServicioCodigosServicioCodigo");
+
+                    b.ToTable("PerfilUsuarioServicio");
+                });
+
             modelBuilder.Entity("WebApiHealthWave.Models.Afeccion", b =>
                 {
                     b.Property<int>("IDAfeccion")
@@ -34,12 +64,17 @@ namespace WebApiHealthWave.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<int?>("IngresoIDIngreso")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("IDAfeccion");
+
+                    b.HasIndex("IngresoIDIngreso");
 
                     b.ToTable("Afecciones");
                 });
@@ -82,6 +117,9 @@ namespace WebApiHealthWave.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IDAutorizacion"));
 
+                    b.Property<int?>("AseguradoraIDAseguradora")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("FechaAutorizacion")
                         .HasColumnType("datetime2");
 
@@ -95,6 +133,8 @@ namespace WebApiHealthWave.Migrations
 
                     b.HasKey("IDAutorizacion");
 
+                    b.HasIndex("AseguradoraIDAseguradora");
+
                     b.HasIndex("IDAseguradora");
 
                     b.ToTable("Autorizaciones");
@@ -107,6 +147,9 @@ namespace WebApiHealthWave.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConsultaCodigo"));
+
+                    b.Property<int?>("AutorizacionIDAutorizacion")
+                        .HasColumnType("int");
 
                     b.Property<string>("CodigoDocumentoMedico")
                         .HasColumnType("nvarchar(max)");
@@ -141,13 +184,25 @@ namespace WebApiHealthWave.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("PerfilUsuarioCodigoDocumento")
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int?>("ServicioCodigo")
+                        .HasColumnType("int");
+
                     b.HasKey("ConsultaCodigo");
+
+                    b.HasIndex("AutorizacionIDAutorizacion");
 
                     b.HasIndex("CodigoPaciente");
 
                     b.HasIndex("IDAutorizacion");
 
                     b.HasIndex("IDConsultorio");
+
+                    b.HasIndex("PerfilUsuarioCodigoDocumento");
+
+                    b.HasIndex("ServicioCodigo");
 
                     b.ToTable("Consultas");
                 });
@@ -229,9 +284,14 @@ namespace WebApiHealthWave.Migrations
                         .HasMaxLength(1)
                         .HasColumnType("nvarchar(1)");
 
+                    b.Property<string>("PerfilUsuarioCodigoDocumento")
+                        .HasColumnType("nvarchar(30)");
+
                     b.HasKey("IDCuenta");
 
                     b.HasIndex("CodigoPaciente");
+
+                    b.HasIndex("PerfilUsuarioCodigoDocumento");
 
                     b.ToTable("CuentasCobrar");
                 });
@@ -496,7 +556,12 @@ namespace WebApiHealthWave.Migrations
                         .HasColumnType("nvarchar(1)")
                         .HasDefaultValue("I");
 
+                    b.Property<string>("UsuarioCodigo")
+                        .HasColumnType("nvarchar(30)");
+
                     b.HasKey("CodigoDocumento");
+
+                    b.HasIndex("UsuarioCodigo");
 
                     b.ToTable("PerfilUsuarios");
                 });
@@ -587,6 +652,9 @@ namespace WebApiHealthWave.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServicioCodigo"));
 
+                    b.Property<int?>("AseguradoraNavigationIDAseguradora")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Costo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(10, 2)")
@@ -607,11 +675,18 @@ namespace WebApiHealthWave.Migrations
                     b.Property<int?>("TipoServicio")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TipoServicioId")
+                        .HasColumnType("int");
+
                     b.HasKey("ServicioCodigo");
+
+                    b.HasIndex("AseguradoraNavigationIDAseguradora");
 
                     b.HasIndex("IDAseguradora");
 
                     b.HasIndex("TipoServicio");
+
+                    b.HasIndex("TipoServicioId");
 
                     b.ToTable("Servicios");
                 });
@@ -658,8 +733,49 @@ namespace WebApiHealthWave.Migrations
                     b.ToTable("Usuarios");
                 });
 
+            modelBuilder.Entity("AfeccionConsulta", b =>
+                {
+                    b.HasOne("WebApiHealthWave.Models.Consulta", null)
+                        .WithMany()
+                        .HasForeignKey("ConsultaCodigo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebApiHealthWave.Models.Afeccion", null)
+                        .WithMany()
+                        .HasForeignKey("IdafeccionsIDAfeccion")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PerfilUsuarioServicio", b =>
+                {
+                    b.HasOne("WebApiHealthWave.Models.PerfilUsuario", null)
+                        .WithMany()
+                        .HasForeignKey("CodigoPacientesCodigoDocumento")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebApiHealthWave.Models.Servicio", null)
+                        .WithMany()
+                        .HasForeignKey("ServicioCodigosServicioCodigo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WebApiHealthWave.Models.Afeccion", b =>
+                {
+                    b.HasOne("WebApiHealthWave.Models.Ingreso", null)
+                        .WithMany("Afecciones")
+                        .HasForeignKey("IngresoIDIngreso");
+                });
+
             modelBuilder.Entity("WebApiHealthWave.Models.Autorizacion", b =>
                 {
+                    b.HasOne("WebApiHealthWave.Models.Aseguradora", null)
+                        .WithMany("Autorizacions")
+                        .HasForeignKey("AseguradoraIDAseguradora");
+
                     b.HasOne("WebApiHealthWave.Models.Aseguradora", "Aseguradora")
                         .WithMany()
                         .HasForeignKey("IDAseguradora")
@@ -670,6 +786,10 @@ namespace WebApiHealthWave.Migrations
 
             modelBuilder.Entity("WebApiHealthWave.Models.Consulta", b =>
                 {
+                    b.HasOne("WebApiHealthWave.Models.Autorizacion", null)
+                        .WithMany("Consultas")
+                        .HasForeignKey("AutorizacionIDAutorizacion");
+
                     b.HasOne("WebApiHealthWave.Models.PerfilUsuario", "Paciente")
                         .WithMany("Consultas")
                         .HasForeignKey("CodigoPaciente")
@@ -684,6 +804,14 @@ namespace WebApiHealthWave.Migrations
                         .WithMany()
                         .HasForeignKey("IDConsultorio")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WebApiHealthWave.Models.PerfilUsuario", null)
+                        .WithMany("Consulta")
+                        .HasForeignKey("PerfilUsuarioCodigoDocumento");
+
+                    b.HasOne("WebApiHealthWave.Models.Servicio", null)
+                        .WithMany("ConsultaCodigos")
+                        .HasForeignKey("ServicioCodigo");
 
                     b.Navigation("Autorizacion");
 
@@ -736,6 +864,10 @@ namespace WebApiHealthWave.Migrations
                         .WithMany("CuentasCobrar")
                         .HasForeignKey("CodigoPaciente")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("WebApiHealthWave.Models.PerfilUsuario", null)
+                        .WithMany("CuentaCobrars")
+                        .HasForeignKey("PerfilUsuarioCodigoDocumento");
 
                     b.Navigation("PerfilUsuario");
                 });
@@ -900,6 +1032,15 @@ namespace WebApiHealthWave.Migrations
                     b.Navigation("Cuenta");
                 });
 
+            modelBuilder.Entity("WebApiHealthWave.Models.PerfilUsuario", b =>
+                {
+                    b.HasOne("WebApiHealthWave.Models.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioCodigo");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("WebApiHealthWave.Models.PrescripcionProducto", b =>
                 {
                     b.HasOne("WebApiHealthWave.Models.Consulta", "Consulta")
@@ -940,6 +1081,10 @@ namespace WebApiHealthWave.Migrations
 
             modelBuilder.Entity("WebApiHealthWave.Models.Servicio", b =>
                 {
+                    b.HasOne("WebApiHealthWave.Models.Aseguradora", "AseguradoraNavigation")
+                        .WithMany("Servicios")
+                        .HasForeignKey("AseguradoraNavigationIDAseguradora");
+
                     b.HasOne("WebApiHealthWave.Models.Aseguradora", "Aseguradora")
                         .WithMany()
                         .HasForeignKey("IDAseguradora")
@@ -950,7 +1095,13 @@ namespace WebApiHealthWave.Migrations
                         .HasForeignKey("TipoServicio")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("WebApiHealthWave.Models.TipoServicio", null)
+                        .WithMany("Servicios")
+                        .HasForeignKey("TipoServicioId");
+
                     b.Navigation("Aseguradora");
+
+                    b.Navigation("AseguradoraNavigation");
 
                     b.Navigation("TipoServicioNavigation");
                 });
@@ -973,8 +1124,17 @@ namespace WebApiHealthWave.Migrations
                     b.Navigation("IngresoAfecciones");
                 });
 
+            modelBuilder.Entity("WebApiHealthWave.Models.Aseguradora", b =>
+                {
+                    b.Navigation("Autorizacions");
+
+                    b.Navigation("Servicios");
+                });
+
             modelBuilder.Entity("WebApiHealthWave.Models.Autorizacion", b =>
                 {
+                    b.Navigation("Consultas");
+
                     b.Navigation("FacturaProductos");
 
                     b.Navigation("FacturaServicios");
@@ -1011,6 +1171,8 @@ namespace WebApiHealthWave.Migrations
 
             modelBuilder.Entity("WebApiHealthWave.Models.Ingreso", b =>
                 {
+                    b.Navigation("Afecciones");
+
                     b.Navigation("Facturas");
 
                     b.Navigation("IngresoAfecciones");
@@ -1023,7 +1185,11 @@ namespace WebApiHealthWave.Migrations
 
             modelBuilder.Entity("WebApiHealthWave.Models.PerfilUsuario", b =>
                 {
+                    b.Navigation("Consulta");
+
                     b.Navigation("Consultas");
+
+                    b.Navigation("CuentaCobrars");
 
                     b.Navigation("CuentasCobrar");
 
@@ -1054,9 +1220,16 @@ namespace WebApiHealthWave.Migrations
 
             modelBuilder.Entity("WebApiHealthWave.Models.Servicio", b =>
                 {
+                    b.Navigation("ConsultaCodigos");
+
                     b.Navigation("ConsultaServicios");
 
                     b.Navigation("ReservaServicios");
+                });
+
+            modelBuilder.Entity("WebApiHealthWave.Models.TipoServicio", b =>
+                {
+                    b.Navigation("Servicios");
                 });
 #pragma warning restore 612, 618
         }

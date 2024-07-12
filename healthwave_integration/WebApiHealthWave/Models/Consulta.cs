@@ -1,4 +1,6 @@
-﻿namespace WebApiHealthWave.Models
+﻿using WebApiHealthWave.Data;
+
+namespace WebApiHealthWave.Models
 {
     public class Consulta
     {
@@ -22,8 +24,24 @@
         public ICollection<Factura>? Facturas { get; set; }
         public ICollection<PrescripcionProducto>? PrescripcionProductos { get; set; } 
         public ICollection<ConsultaAfeccion>? ConsultaAfecciones { get; set; }
-        public ICollection<ConsultaServicio>? ConsultaServicios { get; set; } 
+        public ICollection<ConsultaServicio>? ConsultaServicios { get; set; }
 
+        public virtual ICollection<Afeccion> Idafeccions { get; set; } = new List<Afeccion>();
+
+        public static Consulta FromDto(ConsultaDto consultaDto)
+        {
+            return new Consulta
+            {
+                ConsultaCodigo = consultaDto.ConsultaCodigo,
+                IDConsultorio = (int?)consultaDto.IDConsultorio,
+                IDAutorizacion = (int?)consultaDto.IDAutorizacion,
+                Fecha = consultaDto.Fecha,
+                Motivo = consultaDto.Motivo,
+                Descripcion = consultaDto.Descripcion,
+                Estado = consultaDto.Estado,
+                Costo = consultaDto.Costo,
+            };
+        }
 
 
     }

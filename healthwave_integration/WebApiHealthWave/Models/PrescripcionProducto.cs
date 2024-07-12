@@ -1,4 +1,6 @@
-﻿namespace WebApiHealthWave.Models
+﻿using WebApiHealthWave.Data;
+
+namespace WebApiHealthWave.Models
 {
     public class PrescripcionProducto
     {
@@ -8,5 +10,8 @@
 
         public Producto? Producto { get; set; }
         public Consulta? Consulta { get; set; }
+
+      
+
     }
 }

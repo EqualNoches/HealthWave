@@ -8,7 +8,7 @@
             <div class="flex align-items-center gap-1">
               <Avatar icon="pi pi-user" class="mr-2" size="normal" />
               <span class="flex flex-column text-left justify-content-start align-content-center" v-if="$store.state.user != {}">
-                  <span class="font-medium text-sm">{{ getFirstLastName($store.state.user.nombres, $store.state.user.apellidos) }}</span>
+                  <span class="font-medium text-sm">{{ $store.state.user.nombreUsuario }}</span>
                   <span class="font-light text-xs">Administrador</span>
               </span>
               <span class="flex flex-column text-left justify-content-start align-content-center" v-else>

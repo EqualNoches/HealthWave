@@ -1,4 +1,6 @@
-﻿namespace WebApiHealthWave.Models
+﻿using WebApiHealthWave.Data;
+
+namespace WebApiHealthWave.Models
 {
     public class Ingreso
     {
@@ -20,7 +22,10 @@
 
         public ICollection<Factura>? Facturas { get; set; }
 
-        public ICollection<IngresoAfeccion>? IngresoAfecciones { get; set; } 
+        public ICollection<IngresoAfeccion>? IngresoAfecciones { get; set; }
+
+
+        public virtual ICollection<Afeccion> Afecciones { get; set; } = new List<Afeccion>();
 
 
     }

@@ -1,4 +1,6 @@
-﻿namespace WebApiHealthWave.Data
+﻿using WebApiHealthWave.Models;
+
+namespace WebApiHealthWave.Data
 {
     public class ConsultaAfeccionDto
     {

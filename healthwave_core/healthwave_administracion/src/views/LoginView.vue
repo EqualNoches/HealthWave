@@ -57,7 +57,7 @@ export default {
 
                 push.success("Ha iniciado sesión exitosamente");
                 
-                this.$store.commit('setUser', { nombreUsuario: this.credentials.UserName, nombrePerfil: "Administrador", nombres: "Ronnie Ismael", apellidos: "Difo de Leon"});
+                this.$store.commit('setUser', { nombreUsuario: this.credentials.UserName, nombrePerfil: "Administrador", nombres: "Nombre", apellidos: "Apellido"});
                 
                 const sessionExpireTime = new Date().getTime() + (30 * 60 * 1000);
                 localStorage.setItem('sessionExpireTime', sessionExpireTime);

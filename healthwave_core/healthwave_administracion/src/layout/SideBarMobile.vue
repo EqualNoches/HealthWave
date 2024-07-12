@@ -66,12 +66,23 @@ export default {
               path: "/Aseguradoras",
             },
             {
-              label: "Servicios",
-              icon: "fas fa-laptop-medical",
+              label: "Metodos de Pago",
+              icon: "fas fa-credit-card",
               shortcut: " ",
-              path: "/Servicios",
-            }
-            ,
+              path: "/MetodosDePago",
+            },
+            {
+              label: "Productos",
+              icon: "fas fa-boxes-stacked",
+              shortcut: " ",
+              path: "/Productos",
+            },
+            {
+              label: "Cuentas por Cobrar",
+              icon: "fas fa-cash-register",
+              shortcut: " ",
+              path: "/CuentasPorCobrar",
+            },
             {
               label: "Consultas",
               icon: "fas fa-file-medical",

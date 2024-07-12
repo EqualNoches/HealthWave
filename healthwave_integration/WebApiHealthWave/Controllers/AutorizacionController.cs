@@ -12,14 +12,9 @@ namespace WebApiHealthWave.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AutorizacionController : ControllerBase
+    public class AutorizacionController(AppDbContext context) : ControllerBase
     {
-        private readonly AppDbContext _context;
-
-        public AutorizacionController(AppDbContext context)
-        {
-            _context = context;
-        }
+        private readonly AppDbContext _context = context;
 
         // GET: api/Autorizacion
         [HttpGet]

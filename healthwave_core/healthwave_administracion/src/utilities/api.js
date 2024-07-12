@@ -3,7 +3,7 @@ import store from "@/store";
 import router from "@/router";
 import { push } from "notivue";
 
-const baseURL = "https://localhost:7181/";
+const baseURL = "http://localhost:5042/";
 
 const api = axios.create({
   baseURL: baseURL,

@@ -12,9 +12,14 @@ namespace WebApiHealthWave.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PerfilUsuarioController(AppDbContext context) : ControllerBase
+    public class PerfilUsuarioController : ControllerBase
     {
-        private readonly AppDbContext _context = context;
+        private readonly AppDbContext _context;
+
+        public PerfilUsuarioController(AppDbContext context)
+        {
+            _context = context;
+        }
 
         // GET: api/PerfilUsuario
         [HttpGet]
@@ -80,7 +85,7 @@ namespace WebApiHealthWave.Controllers
             }
             catch (DbUpdateException)
             {
-                if (perfilUsuario.CodigoDocumento != null && PerfilUsuarioExists(perfilUsuario.CodigoDocumento))
+                if (PerfilUsuarioExists(perfilUsuario.CodigoDocumento))
                 {
                     return Conflict();
                 }
@@ -109,9 +114,9 @@ namespace WebApiHealthWave.Controllers
             return NoContent();
         }
 
-        private bool PerfilUsuarioExists(string? id)
+        private bool PerfilUsuarioExists(string id)
         {
-            return id != null && _context.PerfilUsuarios.Any(e => e.CodigoDocumento == id);
+            return _context.PerfilUsuarios.Any(e => e.CodigoDocumento == id);
         }
     }
 }

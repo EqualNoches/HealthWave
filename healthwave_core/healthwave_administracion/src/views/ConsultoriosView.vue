@@ -48,7 +48,7 @@
         </div>
       </div>
       <div class="flex justify-content-end gap-2">
-        <Button type="button" label="Cancelar" severity="secondary" @click="visible = false"></Button>
+        <Button type="button" label="Cancelar" severity="secondary" @click="mostrarFormulario = false"></Button>
         <Button type="button" label="Guardar" @click="Guardar()"></Button>
       </div>
     </Dialog>
@@ -95,11 +95,11 @@ export default {
           telefono: "string",
           consultaCodigo: []
         }
-      ];
+      ];  
 
-      const response = await api.get('api/Consultorio/get');
+      const response = await api.get('api/Consultorio');
       if (response.data) {
-        this.consultorios = response.data.data;
+        this.consultorios = response.data;
       }
     },
     async Guardar() {

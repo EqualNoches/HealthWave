@@ -189,7 +189,7 @@
 import { FilterMatchMode } from "@primevue/core/api";
 import api from "@/utilities/api.js";
 import { push } from "notivue";
-
+  
 export default {
   name: "UsuariosView",
   created() {

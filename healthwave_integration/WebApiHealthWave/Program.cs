@@ -1,82 +1,90 @@
 using Microsoft.EntityFrameworkCore;
-
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApiHealthWave.Context;
 using WebApiHealthWave.Services.Interfaces;
 using WebApiHealthWave.Services;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using System.IO;
+using NLog;
+using NLog.Web;
+using WebApiHealthWave.Services.Firestore;
 
-var builder = WebApplication.CreateBuilder(args);
+var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-builder.Services.AddOpenApiDocument();
-
-
-// Add services to the container.
-// Crear variable para la cadena de conexión 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-// Registrar servicio para la conexión 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
-
-builder.Services.AddScoped<IAfeccionService, AfeccionService>();
-builder.Services.AddScoped<IAseguradoraService, AseguradoraService>();
-builder.Services.AddScoped<IAutorizacionService, AutorizacionService>();
-builder.Services.AddScoped<IConsultorioService, ConsultorioService>();
-builder.Services.AddScoped<ICuentaCobrarService, CuentaCobrarService>();
-builder.Services.AddScoped<IFacturaService, FacturaService>();
-builder.Services.AddScoped<IIngresoService, IngresoService>();
-builder.Services.AddScoped<IMetodoPagoService, MetodoPagoService>();
-builder.Services.AddScoped<IPagoService, PagoService>();
-builder.Services.AddScoped<IProductoService, ProductoService>();
-builder.Services.AddScoped<IReservaServicio, ReservaServicioService>();
-builder.Services.AddScoped<ISalaService, SalaService>();
-builder.Services.AddScoped<IServicioService, ServicioService>();
-builder.Services.AddScoped<ITipoServicioService, TipoServicioService>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-
-builder.Services.AddControllers();
-
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+try
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiHealthWave", Version = "v1" });
-    c.DocumentFilter<HideSchemaDocumentFilter>();
-});
+    logger.Debug("init main");
 
-var app = builder.Build();
+    var builder = WebApplication.CreateBuilder(args);
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    // Initialize NLog
+    builder.Logging.ClearProviders();
+    builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+    builder.Host.UseNLog();
 
-app.UseHttpsRedirection();
+    // Initialize Firebase
+   
 
-app.UseCors("AllowCoreApp"); // Aplicar la política CORS
+    // Add services to the container.
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
-app.UseAuthorization();
+    // Register HttpClient for each service
+    builder.Services.AddHttpClient<IAfeccionService, AfeccionService>();
+    builder.Services.AddHttpClient<IAseguradoraService, AseguradoraService>();
+    builder.Services.AddHttpClient<IAutorizacionService, AutorizacionService>();
+    builder.Services.AddHttpClient<IConsultorioService, ConsultorioService>();
+    builder.Services.AddHttpClient<ICuentaCobrarService, CuentaCobrarService>();
+    builder.Services.AddHttpClient<IFacturaService, FacturaService>();
+    builder.Services.AddHttpClient<IIngresoService, IngresoService>();
+    builder.Services.AddHttpClient<IMetodoPagoService, MetodoPagoService>();
+    builder.Services.AddHttpClient<IPagoService, PagoService>();
+    builder.Services.AddHttpClient<IProductoService, ProductoService>();
+    builder.Services.AddHttpClient<IReservaServicio, ReservaServicioService>();
+    builder.Services.AddHttpClient<ISalaService, SalaService>();
+    builder.Services.AddHttpClient<IServicioService, ServicioService>();
+    builder.Services.AddHttpClient<ITipoServicioService, TipoServicioService>();
+    builder.Services.AddHttpClient<IUsuarioService, UsuarioService>();
 
-app.MapControllers();
+    builder.Services.AddScoped<FirestoreService>();
 
-app.Run();
+    builder.Services.AddControllers();
 
-// Clase para ocultar esquemas específicos en Swagger
-public class HideSchemaDocumentFilter : IDocumentFilter
-{
-    public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(c =>
     {
-        var schemasToRemove = new List<string> { "SalaDto" };
-        foreach (var schema in schemasToRemove)
-        {
-            if (swaggerDoc.Components.Schemas.ContainsKey(schema))
-            {
-                swaggerDoc.Components.Schemas.Remove(schema);
-            }
-        }
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiHealthWave", Version = "v1" });
+    });
+
+    var app = builder.Build();
+
+
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
     }
+
+    app.UseHttpsRedirection();
+
+    app.UseCors("AllowCoreApp");
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
+}
+catch (Exception ex)
+{
+    logger.Error(ex, "Stopped program because of exception");
+    throw;
+}
+finally
+{
+    NLog.LogManager.Shutdown();
 }

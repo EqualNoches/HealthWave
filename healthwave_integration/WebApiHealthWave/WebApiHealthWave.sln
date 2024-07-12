@@ -5,7 +5,9 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiHealthWave", "WebApiHealthWave.csproj", "{1199403D-AC88-4E02-859A-D5CF41A9B023}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalCore_core", "..\..\HealthWave Clone\HealthWave\healthwave_core\healthwave_core\HospitalCore_core\HospitalCore_core.csproj", "{44C15311-93B8-4A9E-AF68-93588A8B4C84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HospitalCore_core", "..\..\HealthWave integration services\HealthWave\healthwave_core\healthwave_core\HospitalCore_core\HospitalCore_core.csproj", "{46DB3A27-E03C-4EC2-ACAB-CBD4489E106D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CajaComplete", "..\..\HealthWave integration services\HealthWave\healthwave_caja\CajaComplete\CajaComplete\CajaComplete.csproj", "{52153074-ABBF-4998-9C8F-3769917349F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +19,14 @@ Global
 		{1199403D-AC88-4E02-859A-D5CF41A9B023}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1199403D-AC88-4E02-859A-D5CF41A9B023}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1199403D-AC88-4E02-859A-D5CF41A9B023}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44C15311-93B8-4A9E-AF68-93588A8B4C84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44C15311-93B8-4A9E-AF68-93588A8B4C84}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44C15311-93B8-4A9E-AF68-93588A8B4C84}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44C15311-93B8-4A9E-AF68-93588A8B4C84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46DB3A27-E03C-4EC2-ACAB-CBD4489E106D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46DB3A27-E03C-4EC2-ACAB-CBD4489E106D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46DB3A27-E03C-4EC2-ACAB-CBD4489E106D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46DB3A27-E03C-4EC2-ACAB-CBD4489E106D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52153074-ABBF-4998-9C8F-3769917349F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52153074-ABBF-4998-9C8F-3769917349F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52153074-ABBF-4998-9C8F-3769917349F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52153074-ABBF-4998-9C8F-3769917349F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

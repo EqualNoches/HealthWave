@@ -32,7 +32,21 @@ builder.Services.AddHttpClient<ISalaService, SalaService>();
 builder.Services.AddHttpClient<IServicioService, ServicioService>();
 builder.Services.AddHttpClient<ITipoServicioService, TipoServicioService>();
 
+// Configurar cliente para API A
+builder.Services.AddHttpClient<ICoreAPIClient, CoreAPIClient>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:3306");
+});
+
+// Configurar cliente para API B
+builder.Services.AddHttpClient<ICoreAPIClient, CoreAPIClient>(client =>
+{
+    client.BaseAddress = new Uri("https://api-b.example.com/");
+});
+
 builder.Services.AddControllers();
+// Registrar DataTransferService
+builder.Services.AddTransient<DataTransferService>();
 
 // Configurar CORS
 builder.Services.AddCors(options =>
@@ -40,7 +54,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowCoreApp",
         builder =>
         {
-            builder.WithOrigins("http://localhost:5042")
+            builder.WithOrigins("http://localhost:3306")
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });

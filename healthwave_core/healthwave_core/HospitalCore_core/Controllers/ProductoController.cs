@@ -17,7 +17,7 @@ public class ProductoController(IProductoService productoService) : ControllerBa
     private readonly LogManager<ProductoController> _logManager = new();
 
     [HttpPost("post")]
-    public async Task<ActionResult> PostProducto([FromQuery]ProductoDto producto)
+    public async Task<ActionResult> PostProducto([FromBody]ProductoDto producto)
     {
         try
         {

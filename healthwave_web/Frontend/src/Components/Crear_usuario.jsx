@@ -55,7 +55,7 @@ const Register = () => {
                 placeholder="********"
               />
             </div>
-            <button type="submit" className="Button-Register">
+            <button type="submit" className="Register-Button">
               Regístrate
             </button>
           </form>

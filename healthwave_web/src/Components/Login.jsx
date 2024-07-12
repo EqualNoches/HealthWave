@@ -1,5 +1,6 @@
 import React from "react";
-import "../Styles/Login.css"; // Asegúrate de crear este archivo CSS para los estilos
+import { Link } from "react-router-dom";
+import "../Styles/Login.css";
 import background from "/img_hospital.jpg";
 
 const Login = () => {
@@ -30,11 +31,13 @@ const Login = () => {
             <div className="forgot-password">
               <a href="#">Forget password?</a>
             </div>
-            <button type="submit">Iniciar Sesión</button>
+            <button type="submit" className="Button-Login">
+              Iniciar Sesión
+            </button>
           </form>
           <div className="register">
             <span>
-              No tienes una cuenta? <a href="#">Regístrate</a>
+              No tienes una cuenta? <Link to="/register">Regístrate</Link>
             </span>
           </div>
         </div>

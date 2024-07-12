@@ -1,0 +1,20 @@
+{
+  "runtime": "NetCore31",
+  "defaultVariables": null,
+  "swaggerGenerator": {
+    "fromDocument": {
+      "url": "http://localhost:5243/",
+      "output": null
+    }
+  },
+  "codeGenerators": {
+    "openApiToCSharpClient": {
+      "clientBaseClass": "ApiClient",
+      "configurationClass": "ApiClientSettings",
+      "generateClientInterfaces": true,
+      "generateDtoTypes": true,
+      "namespace": "MyProject.ApiA",
+      "output": "ApiA.cs"
+    }
+  }
+}

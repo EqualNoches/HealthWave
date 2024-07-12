@@ -154,6 +154,9 @@ namespace CajaComplete
                 montoCobrado += p.montoCobrado;
                 transaccionesCobradas += p.n_cobrado;
                 clienteAtendido = true;
+                frmRecibo r = new frmRecibo();
+                r.transacciones = p.createTransactions();
+                r.ShowDialog();
             }
         }
 

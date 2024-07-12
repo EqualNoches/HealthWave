@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using Microsoft.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -21,6 +22,44 @@ namespace CajaComplete
         public frmPago()
         {
             InitializeComponent();
+        }
+
+        public List<Transaccion> createTransactions()
+        {
+            List<Transaccion> transacciones = new List<Transaccion>();
+            foreach (int id in ids)
+            {
+                using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True"))
+                {
+                    conn.SetNewTransaction("getTransactionById", new Dictionary<string, object> { { "@id", id } });
+                    SqlDataReader reader = conn.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            transacciones.Add(new Transaccion()
+                            {
+                                Id = reader.GetInt32(0),
+                                Nombre = reader.GetString(1),
+                                Documento = reader.GetString(2),
+                                Procedimiento = reader.GetString(3),
+                                Costo = reader.GetFloat(4),
+                                Pago = reader.GetBoolean(5),
+                                Metodo = reader.GetString(6),
+                                FechaIngreso = reader.GetDateTime(7),
+                                FechaPago = reader.GetDateTime(8),
+                                Aseguradora = reader.GetString(9),
+                                InsertadoPor = reader.GetString(10),
+                                Apellido = reader.GetString(11),
+                                DescuentoAseguradora = reader.GetFloat(12)
+
+                            });
+                        }
+                    }
+                }
+            }
+            return transacciones;
         }
 
         private void label2_Click(object sender, EventArgs e)

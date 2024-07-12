@@ -21,7 +21,7 @@
 }
 
 .login-box {
-  background-color: rgba(0, 0, 0, 0.7); /* Ajustar la opacidad del fondo */
+  background-color: rgba(0, 0, 0, 0.8); /* Ajustar la opacidad del fondo */
   padding: 40px; /* Aumentar el padding */
   border-radius: 10px;
   text-align: center;
@@ -67,7 +67,7 @@
   text-decoration: none;
 }
 
-button {
+.Button-Login {
   width: 100%;
   padding: 10px;
   background-color: #9acd32;
@@ -78,7 +78,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+.Button-Login:hover {
   background-color: #7caf25;
 }
 

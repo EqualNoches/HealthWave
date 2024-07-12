@@ -60,7 +60,7 @@
   color: #ccc; /* Color de los placeholders */
 }
 
-button {
+.Register-Button {
   width: 50%;
   padding: 10px;
   background-color: #9acd32;
@@ -71,7 +71,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+.Register-Button:hover {
   background-color: #7caf25;
 }
 

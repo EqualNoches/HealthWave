@@ -30,10 +30,15 @@
         {
             this.components = new System.ComponentModel.Container();
             Microsoft.Reporting.WinForms.ReportDataSource reportDataSource1 = new Microsoft.Reporting.WinForms.ReportDataSource();
-            this.reportViewer1 = new Microsoft.Reporting.WinForms.ReportViewer();
             this.transaccionBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.reportViewer1 = new Microsoft.Reporting.WinForms.ReportViewer();
             ((System.ComponentModel.ISupportInitialize)(this.transaccionBindingSource)).BeginInit();
             this.SuspendLayout();
+            // 
+            // transaccionBindingSource
+            // 
+            this.transaccionBindingSource.DataSource = typeof(CajaComplete.Transaccion);
+            this.transaccionBindingSource.CurrentChanged += new System.EventHandler(this.transaccionBindingSource_CurrentChanged);
             // 
             // reportViewer1
             // 
@@ -49,10 +54,6 @@
             this.reportViewer1.TabIndex = 0;
             this.reportViewer1.Load += new System.EventHandler(this.reportViewer1_Load);
             // 
-            // transaccionBindingSource
-            // 
-            this.transaccionBindingSource.DataSource = typeof(CajaComplete.Transaccion);
-            // 
             // frmRecibo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -62,7 +63,7 @@
             this.Controls.Add(this.reportViewer1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "frmRecibo";
-            this.Text = "frmRecibo";
+            this.Text = "Recibo";
             this.Load += new System.EventHandler(this.frmRecibo_Load);
             ((System.ComponentModel.ISupportInitialize)(this.transaccionBindingSource)).EndInit();
             this.ResumeLayout(false);

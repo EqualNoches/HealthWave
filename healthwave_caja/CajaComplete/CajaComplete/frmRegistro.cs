@@ -48,8 +48,7 @@ namespace CajaComplete
             
             if (checkFields(nom, ape, dir, tel, email, tipodoc, doc, sex))
             {
-                MessageBox.Show("check is good, add stuff");
-                using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True"))
+                using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\HealthWave\\healthwave_caja\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True;MultipleActiveResultSets=True"))
                 {
                     Dictionary<string, object> dict = new Dictionary<string, object>();
                     dict.Add("@nom", nom);

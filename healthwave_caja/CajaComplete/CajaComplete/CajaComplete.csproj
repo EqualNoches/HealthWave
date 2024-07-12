@@ -191,6 +191,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoreInterface.cs" />
     <Compile Include="frmCuadre.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -87,9 +87,9 @@
             // 
             // btnInsertar
             // 
-            this.btnInsertar.Location = new System.Drawing.Point(100, 178);
+            this.btnInsertar.Location = new System.Drawing.Point(100, 168);
             this.btnInsertar.Name = "btnInsertar";
-            this.btnInsertar.Size = new System.Drawing.Size(86, 23);
+            this.btnInsertar.Size = new System.Drawing.Size(86, 33);
             this.btnInsertar.TabIndex = 6;
             this.btnInsertar.Text = "Insertar";
             this.btnInsertar.UseVisualStyleBackColor = true;
@@ -108,7 +108,7 @@
             this.Controls.Add(this.txtAp);
             this.Controls.Add(this.txtNom);
             this.Name = "frmLoginCliente";
-            this.Text = "frmLoginCliente";
+            this.Text = "Cliente Existente";
             this.ResumeLayout(false);
             this.PerformLayout();
 

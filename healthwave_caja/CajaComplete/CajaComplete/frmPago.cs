@@ -29,32 +29,33 @@ namespace CajaComplete
             List<Transaccion> transacciones = new List<Transaccion>();
             foreach (int id in ids)
             {
-                using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True"))
+                using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\HealthWave\\healthwave_caja\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True"))
                 {
-                    conn.SetNewTransaction("getTransactionById", new Dictionary<string, object> { { "@id", id } });
-                    SqlDataReader reader = conn.ExecuteReader();
-
-                    if (reader.HasRows)
+                    conn.SetNewTransaction("transById", new Dictionary<string, object> { { "@id", id } });
+                    using (SqlDataReader reader = conn.ExecuteReader())
                     {
-                        while (reader.Read())
+                        if (reader.HasRows)
                         {
-                            transacciones.Add(new Transaccion()
+                            while (reader.Read())
                             {
-                                Id = reader.GetInt32(0),
-                                Nombre = reader.GetString(1),
-                                Documento = reader.GetString(2),
-                                Procedimiento = reader.GetString(3),
-                                Costo = reader.GetFloat(4),
-                                Pago = reader.GetBoolean(5),
-                                Metodo = reader.GetString(6),
-                                FechaIngreso = reader.GetDateTime(7),
-                                FechaPago = reader.GetDateTime(8),
-                                Aseguradora = reader.GetString(9),
-                                InsertadoPor = reader.GetString(10),
-                                Apellido = reader.GetString(11),
-                                DescuentoAseguradora = reader.GetFloat(12)
+                                transacciones.Add(new Transaccion()
+                                {
+                                    Id = reader.GetInt32(0),
+                                    Nombre = reader.GetString(1),
+                                    Documento = reader.GetString(2),
+                                    Procedimiento = reader.GetString(3),
+                                    Costo = reader.IsDBNull(4) ? 0 : (float)Convert.ToSingle(reader.GetValue(4)),
+                                    Pago = reader.GetBoolean(5),
+                                    Metodo = reader.GetString(6),
+                                    FechaIngreso = reader.GetDateTime(7),
+                                    FechaPago = reader.GetDateTime(8),
+                                    Aseguradora = reader.GetString(9),
+                                    InsertadoPor = reader.GetString(10),
+                                    Apellido = reader.GetString(11),
+                                    DescuentoAseguradora = reader.IsDBNull(12) ? 0 : (float)Convert.ToSingle(reader.GetValue(12))
 
-                            });
+                                });
+                            }
                         }
                     }
                 }
@@ -93,6 +94,7 @@ namespace CajaComplete
             montoCobrado += (int)Math.Round(monto);
             this.DialogResult = DialogResult.OK;
             this.Close();
+            float.Parse(this.nudDescuento.Value.ToString());
         }
 
         private bool payTransactions(string metodo)
@@ -101,7 +103,7 @@ namespace CajaComplete
             {
                 foreach(int id in ids)
                 {
-                    using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True"))
+                    using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\HealthWave\\healthwave_caja\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True;MultipleActiveResultSets=True"))
                     {
                         conn.SetNewTransaction("payTransaction", new Dictionary<string, object> { { "@id", id }, { "@aseguradora", txtAseguradora.Text.IsNullOrEmpty() ? "" : txtAseguradora.Text }, { "@descuento", nudDescuento.Value }, { "@metodo", metodo } });
                         conn.ExecuteNonQuery();
@@ -128,7 +130,6 @@ namespace CajaComplete
             
             if (!payTransactions("Tarjeta"))
             {
-                MessageBox.Show("[DEV]: reminder to put a cache backup and ping. We can do that directly in the Transact module tbh.");
                 return;
             }
             this.DialogResult = DialogResult.OK;

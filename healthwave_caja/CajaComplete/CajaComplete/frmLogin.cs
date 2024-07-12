@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Microsoft.Data.SqlClient;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace CajaComplete
 {
@@ -22,52 +16,49 @@ namespace CajaComplete
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (login(txtUsuario.Text, txtClave.Text))
+            try
             {
-                
-                using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True"))
+                if (login(txtUsuario.Text, txtClave.Text))
                 {
-                    conn.SetNewTransaction("getLatest");
-                    object r = conn.ExecuteScalar();
-                    if (r != null)
-                    {
-                        main.inicio_de_dia = Convert.ToInt32(r);
-                    }
-                    else
-                    {
-                        main.inicio_de_dia = 10_000;
-                    }
-                }
-                main.StartPosition = FormStartPosition.CenterScreen;
-                main.FormClosed += (s, args) => this.Close();
-                this.Hide();
-                main.Show();
 
-            }
-            else
+                    using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\HealthWave\\healthwave_caja\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True;MultipleActiveResultSets=True"))
+                    {
+                        conn.SetNewTransaction("getLatest");
+                        object r = conn.ExecuteScalar();
+                        main.inicio_de_dia = main.montoDia = Convert.ToInt32(r);
+                       
+                    }
+                    main.StartPosition = FormStartPosition.CenterScreen;
+                    main.FormClosed += (s, args) => this.Close();
+                    this.Hide();
+                    main.Show();
+
+                }
+                else
+                {
+                    MessageBox.Show("Usuario o clave incorrectos");
+                }
+            } catch (TimeoutException)
             {
-                MessageBox.Show("Usuario o clave incorrectos");
+                return;
             }
-            
         }
 
         private bool login(string user, string pass)
         {
-            // Here we get the employee data and assign it to main form IF IT'S TRUE.
-            bool got_data = false;
-            using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True"))
+            CoreInterface core = new CoreInterface();
+            Usuario usuario = core.login(user, pass);
+            if (usuario == null)
             {
-                conn.SetNewTransaction("getEmployee", new Dictionary<string, object> { { "@nom", user }, { "@pass", pass } });
-                SqlDataReader reader = conn.ExecuteReader();
-                got_data = reader.HasRows;
-                while (reader.Read()) {
-                    main.employee_name = user;
-                    main.employee_sur = reader.GetString(2);
-                    main.employee_doc = reader.GetString(3);
-                }
-                reader.Close();
+                return false;
             }
-            return got_data;
+            else
+            {
+                main.employee_name = usuario.nombre;
+                main.employee_sur = usuario.apellido;
+                main.employee_doc = usuario.codigoDocumento;
+                return true;
+            }
         }
     }
 }

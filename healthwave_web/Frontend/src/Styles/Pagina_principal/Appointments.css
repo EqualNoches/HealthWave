@@ -1,0 +1,25 @@
+.appointments {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  width: 30%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.appointments h3 {
+  color: black;
+  margin-top: 0;
+}
+
+.appointments table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.appointments th,
+.appointments td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}

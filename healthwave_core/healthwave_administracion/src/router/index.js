@@ -12,6 +12,7 @@ import MetodosPagosView from '@/views/MetodosPagosView.vue';
 import ProductosView from '@/views/ProductosView.vue';
 import CuentasPorCobrarView from '@/views/CuentasPorCobrarView.vue';
 import ConsultasView from '@/views/ConsultasView.vue';
+import ServiciosView from '@/views/ServiciosView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -85,6 +86,14 @@ const router = createRouter({
       path: '/Consultas',
       name: 'Consultas',
       component: ConsultasView,
+      meta: {
+        authenticated: true,
+      }
+    },
+    {
+      path: '/Servicios',
+      name: 'Servicios',
+      component: ServiciosView,
       meta: {
         authenticated: true,
       }

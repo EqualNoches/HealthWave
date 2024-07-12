@@ -1,0 +1,39 @@
+.home-page {
+  display: flex;
+  width: 97.55vw;
+  height: 95vh;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f5efed; /* Beige claro */
+  padding: 20px;
+  max-width: 100vw;
+  max-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-image: url("/home.webp");
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100vw; /* Limitar el ancho máximo */
+  padding: 20px;
+}
+
+.top-section,
+.bottom-section {
+  display: flex;
+  justify-content: space-between; /* Ajustar el espaciado */
+  margin-right: 5px;
+}
+
+.top-section > *,
+.bottom-section > * {
+  flex: 1;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 20%; /* Limitar el ancho máximo de cada sección */
+}

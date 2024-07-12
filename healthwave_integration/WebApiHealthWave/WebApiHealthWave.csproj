@@ -41,9 +41,4 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\HealthWave integration services\HealthWave\healthwave_caja\CajaComplete\CajaComplete\CajaComplete.csproj" />
-    <ProjectReference Include="..\..\HealthWave integration services\HealthWave\healthwave_core\healthwave_core\HospitalCore_core\HospitalCore_core.csproj" />
-  </ItemGroup>
-
 </Project>

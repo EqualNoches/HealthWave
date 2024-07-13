@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+
+
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApiHealthWave.Context;
 using WebApiHealthWave.Services.Interfaces;
 using WebApiHealthWave.Services;
-using ImplicitUsings;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using System.IO;
@@ -29,8 +30,25 @@ try
    
 
     // Add services to the container.
+
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    
     builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+
+    // Add CORS policy
+    // Add CORS
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowCoreApp",
+            builder =>
+            {
+                builder.WithOrigins("https://localhost:7181") // URL del Core
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    });
+
+
 
     // Register HttpClient for each service
     builder.Services.AddHttpClient<IAfeccionService, AfeccionService>();
@@ -56,7 +74,7 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(c =>
     {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiHealthWave", Version = "v1" });
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Integracion_HealthWave", Version = "v1" });
     });
 
     var app = builder.Build();
@@ -66,13 +84,16 @@ try
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
+        
         app.UseSwagger();
         app.UseSwaggerUI();
     }
 
     app.UseHttpsRedirection();
 
+
     app.UseCors("AllowCoreApp");
+
 
     app.UseAuthorization();
 

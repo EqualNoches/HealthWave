@@ -26,6 +26,7 @@ namespace CajaComplete
         public string Direccion { get; set; }
         public string Correo { get; set; }
         public string Telefono { get; set; }
+        public string Empleado { get; set; }
         public frmTransacciones()
         {
             InitializeComponent();
@@ -44,7 +45,7 @@ namespace CajaComplete
             this.dgvTransacciones.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             this.dgvTransacciones.AllowUserToAddRows = false;
             DataTable dt = new DataTable();
-            using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True"))
+            using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\HealthWave\\healthwave_caja\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True;MultipleActiveResultSets=True"))
             {
                 conn.SetNewTransaction("fetchCliente", new Dictionary<string, object> { { "@nom", this.Nombre }, { "@ap", this.Apellido }, { "@doc", this.Documento } });
                 SqlDataReader data = conn.ExecuteReader();                
@@ -72,7 +73,7 @@ namespace CajaComplete
 
         private void refreshData()
         {
-            using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True"))
+            using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\HealthWave\\healthwave_caja\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True;MultipleActiveResultSets=True"))
             {
                 conn.SetNewTransaction("fetchTransacciones", new Dictionary<string, object> { { "@nom", this.Nombre }, { "@ap", this.Apellido }, { "@doc", this.Documento } });
                 SqlDataReader data = conn.ExecuteReader();
@@ -98,7 +99,7 @@ namespace CajaComplete
             }
             if (result == DialogResult.OK)
             {
-                using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True"))
+                using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\HealthWave\\healthwave_caja\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True;MultipleActiveResultSets=True"))
                 {
                     Dictionary<string, object> parameters = new Dictionary<string, object> {
                         { "@nom", this.Nombre },
@@ -106,7 +107,7 @@ namespace CajaComplete
                         { "@doc", this.Documento },
                         { "@proc", proc},
                         { "@cost", cost },
-                        { "@ip", "Employee" }
+                        { "@ip", Empleado }
                     };
                     conn.SetNewTransaction("insertTransaccion", parameters);
                     int? success = conn.ExecuteNonQuery();
@@ -154,6 +155,9 @@ namespace CajaComplete
                 montoCobrado += p.montoCobrado;
                 transaccionesCobradas += p.n_cobrado;
                 clienteAtendido = true;
+                frmRecibo r = new frmRecibo();
+                r.transacciones = p.createTransactions();
+                r.ShowDialog();
             }
         }
 

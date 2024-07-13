@@ -227,7 +227,7 @@ export default {
         },
       ];
 
-      const response = await api.get("/api/Consulta/get");
+      const response = await api.get("api/Consulta/get");
       if (response.data) {
         this.consultas = response.data;
       }

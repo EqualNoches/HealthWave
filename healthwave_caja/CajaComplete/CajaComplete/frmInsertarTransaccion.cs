@@ -18,13 +18,17 @@ namespace CajaComplete
         public frmInsertarTransaccion()
         {
             InitializeComponent();
+            CoreInterface coreInterface = new CoreInterface();
+            this.dataGridView1.DataSource = coreInterface.GetServicios().Select(u => new { u.nombre, u.costo }).ToList();
+
         }
 
         private void btnInsertar_Click(object sender, EventArgs e)
         {
+            DataGridViewRow selected = this.dataGridView1.SelectedRows[0];
             this.DialogResult = DialogResult.OK;
-            this.Procedimiento = txtProc.Text;
-            this.Costo = (float)nmuCosto.Value;
+            this.Procedimiento = selected.Cells[0].Value.ToString();
+            this.Costo = float.Parse(selected.Cells[1].Value.ToString());
             this.Close();
 
         }

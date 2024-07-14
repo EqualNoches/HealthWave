@@ -100,6 +100,12 @@ export default {
               icon: "fas fa-file-medical",
               shortcut: " ",
               path: "/Consultas",
+            },
+            {
+              label: "Servicios",
+              icon: "fas fa-notes-medical",
+              shortcut: " ",
+              path: "/Servicios",
             }
           ]
         },

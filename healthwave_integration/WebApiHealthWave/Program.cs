@@ -1,90 +1,112 @@
 using Microsoft.EntityFrameworkCore;
+
+
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApiHealthWave.Context;
-using HospitalCore_core.Services;
-using HospitalCore_core.Services.Interfaces;
+using WebApiHealthWave.Services.Interfaces;
+using WebApiHealthWave.Services;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using System.IO;
+using NLog;
+using NLog.Web;
+using WebApiHealthWave.Services.Firestore;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
 
-// Add services to the container.
-// Crear variable para la cadena de conexión 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-// Registrar servicio para la conexión 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
-
-// Configurar HttpClient para los servicios del Core
-builder.Services.AddHttpClient<IUsuarioService, UsuarioService>();
-builder.Services.AddHttpClient<IAfeccionService, AfeccionService>();
-builder.Services.AddHttpClient<IConsultaService, ConsultaService>();
-builder.Services.AddHttpClient<IAseguradoraService, AseguradoraService>();
-builder.Services.AddHttpClient<IAutorizacionService, AutorizacionService>();
-builder.Services.AddHttpClient<IConsultorioService, ConsultorioService>();
-builder.Services.AddHttpClient<ICuentaCobrarService, CuentaCobrarService>();
-builder.Services.AddHttpClient<IFacturaService, FacturaService>();
-builder.Services.AddHttpClient<IIngresoService, IngresoService>();
-builder.Services.AddHttpClient<IMetodoDePagoService, MetodoDePagoService>();
-builder.Services.AddHttpClient<IPagoService, PagoService>();
-builder.Services.AddHttpClient<IProductoService, ProductoService>();
-builder.Services.AddHttpClient<ISalaService, SalaService>();
-builder.Services.AddHttpClient<IServicioService, ServicioService>();
-builder.Services.AddHttpClient<ITipoServicioService, TipoServicioService>();
-
-builder.Services.AddControllers();
-
-// Configurar CORS
-builder.Services.AddCors(options =>
+try
 {
-    options.AddPolicy("AllowCoreApp",
-        builder =>
-        {
-            builder.WithOrigins("http://localhost:5042")
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
-        });
-});
+    logger.Debug("init main");
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiHealthWave", Version = "v1" });
-    c.DocumentFilter<HideSchemaDocumentFilter>();
-});
+    var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+    // Initialize NLog
+    builder.Logging.ClearProviders();
+    builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+    builder.Host.UseNLog();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    // Initialize Firebase
+   
 
-app.UseHttpsRedirection();
+    // Add services to the container.
 
-app.UseCors("AllowCoreApp"); // Aplicar la política CORS
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    
+    builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
-
-// Clase para ocultar esquemas específicos en Swagger
-public class HideSchemaDocumentFilter : IDocumentFilter
-{
-    public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+    // Add CORS policy
+    // Add CORS
+    builder.Services.AddCors(options =>
     {
-        var schemasToRemove = new List<string> { "SalaDto" };
-        foreach (var schema in schemasToRemove)
-        {
-            if (swaggerDoc.Components.Schemas.ContainsKey(schema))
+        options.AddPolicy("AllowCoreApp",
+            builder =>
             {
-                swaggerDoc.Components.Schemas.Remove(schema);
-            }
-        }
+                builder.WithOrigins("https://localhost:7181") // URL del Core
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    });
+
+
+
+    // Register HttpClient for each service
+    builder.Services.AddHttpClient<IAfeccionService, AfeccionService>();
+    builder.Services.AddHttpClient<IAseguradoraService, AseguradoraService>();
+    builder.Services.AddHttpClient<IAutorizacionService, AutorizacionService>();
+    builder.Services.AddHttpClient<IConsultorioService, ConsultorioService>();
+    builder.Services.AddHttpClient<ICuentaCobrarService, CuentaCobrarService>();
+    builder.Services.AddHttpClient<IFacturaService, FacturaService>();
+    builder.Services.AddHttpClient<IIngresoService, IngresoService>();
+    builder.Services.AddHttpClient<IMetodoPagoService, MetodoPagoService>();
+    builder.Services.AddHttpClient<IPagoService, PagoService>();
+    builder.Services.AddHttpClient<IProductoService, ProductoService>();
+    builder.Services.AddHttpClient<IReservaServicio, ReservaServicioService>();
+    builder.Services.AddHttpClient<ISalaService, SalaService>();
+    builder.Services.AddHttpClient<IServicioService, ServicioService>();
+    builder.Services.AddHttpClient<ITipoServicioService, TipoServicioService>();
+    builder.Services.AddHttpClient<IUsuarioService, UsuarioService>();
+
+    builder.Services.AddScoped<FirestoreService>();
+
+    builder.Services.AddControllers();
+
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Integracion_HealthWave", Version = "v1" });
+    });
+
+    var app = builder.Build();
+
+
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        
+        app.UseSwagger();
+        app.UseSwaggerUI();
     }
+
+    app.UseHttpsRedirection();
+
+
+    app.UseCors("AllowCoreApp");
+
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
+}
+catch (Exception ex)
+{
+    logger.Error(ex, "Stopped program because of exception");
+    throw;
+}
+finally
+{
+    NLog.LogManager.Shutdown();
 }

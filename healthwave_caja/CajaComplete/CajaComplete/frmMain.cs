@@ -8,7 +8,7 @@ namespace CajaComplete
 {
     public partial class frmMain : Form
     {
-        public int inicio_de_dia = 10_000;
+        public int inicio_de_dia;
         public int montoDia = 10_000;
         int num_clientes = 0;
         int num_transacciones = 0;
@@ -20,6 +20,8 @@ namespace CajaComplete
         {
             InitializeComponent();
             this.BackColor = Color.FromArgb(233, 233, 233); // this should be pink-ish
+            this.txtClientesAtendidos.Text = num_clientes.ToString();
+            this.txtTrans.Text = num_transacciones.ToString();
 
         }
 
@@ -30,6 +32,7 @@ namespace CajaComplete
                 trs.Nombre = nombre;
                 trs.Apellido = apellido;
                 trs.Documento = documento;
+                trs.Empleado = employee_name + " " + employee_sur;
                 trs.getClientInfo();
                 trs.StartPosition = FormStartPosition.CenterScreen;
                 this.Hide();
@@ -38,6 +41,8 @@ namespace CajaComplete
                 num_transacciones += trs.transaccionesCobradas;
                 if (trs.clienteAtendido)
                     num_clientes++;
+                this.txtClientesAtendidos.Text = num_clientes.ToString();
+                this.txtTrans.Text = num_transacciones.ToString();
                 txtMonto.Text = montoDia.ToString();
                 this.Show();
             }
@@ -57,7 +62,6 @@ namespace CajaComplete
             }
             if (result == DialogResult.OK)
             {
-                MessageBox.Show("Registro exitoso");
                 
                 // The idea now is to hide the current form, open the transaction form, and when that's exited we open this form again.
                 openTransForm(nom, ape, doc);
@@ -125,7 +129,7 @@ namespace CajaComplete
 
         private void SignOut()
         {
-            using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True"))
+            using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\HealthWave\\healthwave_caja\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True;MultipleActiveResultSets=True"))
             {
                 conn.SetNewTransaction("signOut", new Dictionary<string, object> { { "@nom", employee_name }, { "@ap", employee_sur}, { "@doc", employee_doc}, { "@n_cli", num_clientes }, { "@n_trs", num_transacciones }, { "@dia_init", inicio_de_dia }, { "@dia_fin", montoDia } });
                 conn.ExecuteNonQuery();
@@ -158,7 +162,7 @@ namespace CajaComplete
             DateTime current = DateTime.Now;
             int numClientes = num_clientes;
             int numTrans = num_transacciones;
-            frmCuadre c = new frmCuadre()
+            frmCuadreReport c = new frmCuadreReport()
             {
                 nombre = employee_name,
                 apellido = employee_sur,

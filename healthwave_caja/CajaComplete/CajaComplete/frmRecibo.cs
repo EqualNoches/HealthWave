@@ -63,5 +63,10 @@ namespace CajaComplete
         {
 
         }
+
+        private void transaccionBindingSource_CurrentChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

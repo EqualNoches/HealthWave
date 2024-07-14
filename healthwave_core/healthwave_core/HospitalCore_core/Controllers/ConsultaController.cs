@@ -21,7 +21,7 @@ namespace HospitalCore_core.Controllers
                 var result = await consultaService.AddConsultaAsync(consulta);
                 return Ok(result);
 
-            }
+            }               
             catch (Exception ex)
             {
                 _logManager.LogFatal("Error al crear consulta", ex);
@@ -30,7 +30,7 @@ namespace HospitalCore_core.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<ActionResult<int>> ActualizarConsulta([FromQuery] ConsultaDto consultaDto)
+        public async Task<ActionResult<int>> ActualizarConsulta([FromBody] ConsultaDto consultaDto)
         {
             try
             {

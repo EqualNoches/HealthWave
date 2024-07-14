@@ -33,7 +33,7 @@ namespace CajaComplete
                 {
                     Direction = ParameterDirection.Output
                 };
-                using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True"))
+                using (ConnHandlingTransaction conn = new ConnHandlingTransaction("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\super\\source\\repos\\HealthWave\\healthwave_caja\\CajaComplete\\CajaComplete\\PayDB.mdf;Integrated Security=True;MultipleActiveResultSets=True"))
                 {
                     conn.SetNewTransaction("clienteExiste", new Dictionary<string, object> { { "@nom", txtNom.Text }, { "@ap", txtAp.Text }, { "@doc", txtDoc.Text } });
                     conn.cmd.Parameters.Add(output);

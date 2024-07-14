@@ -540,7 +540,7 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>="Aseguradora: " &amp; IIf(Not String.IsNullOrEmpty(First(Fields!Aseguradora.Value, "DataSet1")), First(Fields!Aseguradora.Value, "DataSet1"),"N/A")</Value>
+                <Value>="Aseguradora: " &amp; IIf(IsNothing(First(Fields!Aseguradora.Value, "DataSet1")) OR First(Fields!Aseguradora.Value, "DataSet1") = "", "N/A", First(Fields!Aseguradora.Value, "DataSet1"))</Value>
                 <Style />
               </TextRun>
             </TextRuns>

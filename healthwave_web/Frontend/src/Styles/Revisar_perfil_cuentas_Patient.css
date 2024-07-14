@@ -1,0 +1,127 @@
+.profile-view {
+  display: flex;
+  flex-direction: row;
+  background-color: #f5efed; /* Beige claro */
+  padding: 40px;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.profile-info,
+.profile-photo {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.profile-info:hover,
+.profile-photo:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.profile-info {
+  flex: 3;
+}
+
+.profile-photo {
+  flex: 1;
+  text-align: center;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.label {
+  background-color: #333333; /* Negro */
+  color: #ffffff;
+  padding: 5px;
+  border-radius: 5px;
+  text-align: center;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.value {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #333333;
+}
+
+.photo-info {
+  margin-top: 20px;
+}
+
+.photo-info .label,
+.photo-info .value {
+  display: block;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.photo-info .label {
+  background-color: #333333;
+  color: #ffffff;
+  padding: 5px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.edit-button,
+.cancel-button {
+  flex: 1;
+  background-color: #7caf25; /* Verde oscuro */
+  color: #ffffff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 10px;
+}
+
+.cancel-button {
+  background-color: #d9534f; /* Rojo */
+  margin-left: 10px;
+}
+
+.edit-button:hover {
+  background-color: #689f38; /* Verde más oscuro */
+}
+
+.cancel-button:hover {
+  background-color: #c9302c; /* Rojo más oscuro */
+}
+
+img {
+  max-width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}

@@ -1,13 +1,12 @@
 .register-background {
   width: 100vw;
-  height: 49vw;
+  height: 100vh; /* Cambiado a 100vh para ocupar toda la altura de la ventana */
   display: flex;
   justify-content: center;
   align-items: center;
   background-size: cover;
   background-position: center;
   background-image: url("/img_hospital.jpg");
-
   border-radius: 5px; /* Radio del borde */
   overflow: hidden; /* Para que el contenido respete el borde redondeado */
 }
@@ -27,7 +26,7 @@
   border-radius: 10px;
   text-align: center;
   color: #fff;
-  max-width: 600px; /* Limitar el ancho máximo */
+  max-width: 900px; /* Aumentar el ancho máximo */
   width: 100%;
   margin: 0 20px; /* Espaciado lateral */
 }
@@ -36,10 +35,24 @@
   margin-bottom: 20px;
 }
 
+.form-container {
+  display: flex;
+  flex-wrap: wrap; /* Permitir el ajuste automático de los elementos */
+  justify-content: space-between;
+}
+
 .input-group {
   margin-bottom: 15px;
   display: flex;
   flex-direction: column; /* Asegura que los labels e inputs estén en columna */
+  width: 48%; /* Ajustar el ancho de los grupos de entrada para dos columnas */
+}
+
+.input-group-full {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column; /* Asegura que los labels e inputs estén en columna */
+  width: 100%; /* Ancho completo para el botón */
 }
 
 .input-group label {
@@ -47,7 +60,8 @@
   text-align: left; /* Alinear a la izquierda */
 }
 
-.input-group input {
+.input-group input,
+.input-group select {
   width: 100%;
   padding: 10px;
   border: none;
@@ -60,8 +74,18 @@
   color: #ccc; /* Color de los placeholders */
 }
 
+.input-group select {
+  color: #fff; /* Texto blanco */
+  background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+}
+
+.input-group select option {
+  color: #000; /* Texto negro para las opciones del select */
+  background: #fff; /* Fondo blanco para las opciones del select */
+}
+
 .Register-Button {
-  width: 50%;
+  width: 100%;
   padding: 10px;
   background-color: #9acd32;
   border: none;
@@ -69,6 +93,7 @@
   color: #fff;
   font-size: 16px;
   cursor: pointer;
+  margin-top: 20px; /* Espacio superior para el botón */
 }
 
 .Register-Button:hover {
@@ -77,9 +102,15 @@
 
 .login-redirect {
   margin-top: 20px;
+  text-align: center; /* Centrar el texto del enlace */
 }
 
 .login-redirect a {
   color: #9acd32;
   text-decoration: none;
+}
+
+.error-message {
+  color: #ff6b6b;
+  margin-top: 10px;
 }

@@ -1,9 +1,12 @@
 .notifications {
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 1); /* Fondo blanco con opacidad */
   border: 1px solid #ddd;
   border-radius: 10px;
   padding: 20px;
+  width: 40%; /* Ajusta el ancho según tus necesidades */
+  margin: 20px auto; /* Centrar el componente */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  min-height: 200px; /* Altura mínima para asegurar que el fondo se vea */
 }
 
 .notifications h3 {
@@ -13,7 +16,9 @@
 
 .notifications table {
   width: 100%;
+  color: gray;
   border-collapse: collapse;
+  font-size: 13px;
 }
 
 .notifications th,
@@ -21,4 +26,10 @@
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+}
+
+.notifications p {
+  color: gray;
+  text-align: center;
+  margin-top: 20px;
 }

@@ -34,26 +34,26 @@
   margin-bottom: 20px;
 }
 
-.input-group {
+.input-group1 {
   margin-bottom: 15px;
 }
 
-.input-group label {
+.input-group1 label {
   display: block;
   margin-bottom: 5px;
   text-align: left; /* Alinear a la izquierda */
 }
 
-.input-group input {
+.input-group1 input {
   width: 100%;
   padding: 10px;
   border: none;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0); /* Fondo semitransparente */
+  background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
   color: #fff; /* Texto blanco */
 }
 
-.input-group input::placeholder {
+.input-group1 input::placeholder {
   color: #ccc; /* Color de los placeholders */
 }
 

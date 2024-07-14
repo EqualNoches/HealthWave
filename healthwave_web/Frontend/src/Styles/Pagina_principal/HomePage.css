@@ -1,7 +1,7 @@
 .home-page {
   display: flex;
-  width: 97.55vw;
-  height: 95vh;
+  width: 100vw;
+  height: 100vh;
   flex-direction: column;
   align-items: center;
   background-color: #f5efed; /* Beige claro */

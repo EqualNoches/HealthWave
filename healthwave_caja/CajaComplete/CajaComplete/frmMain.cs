@@ -162,7 +162,7 @@ namespace CajaComplete
             DateTime current = DateTime.Now;
             int numClientes = num_clientes;
             int numTrans = num_transacciones;
-            frmCuadre c = new frmCuadre()
+            frmCuadreReport c = new frmCuadreReport()
             {
                 nombre = employee_name,
                 apellido = employee_sur,

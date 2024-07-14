@@ -214,11 +214,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CoreInterface.cs" />
+    <Compile Include="Cuadre.cs" />
     <Compile Include="frmCuadre.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmCuadre.Designer.cs">
       <DependentUpon>frmCuadre.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmCuadreReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCuadreReport.Designer.cs">
+      <DependentUpon>frmCuadreReport.cs</DependentUpon>
     </Compile>
     <Compile Include="frmInsertarTransaccion.cs">
       <SubType>Form</SubType>
@@ -273,8 +280,12 @@
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Transaccion.cs" />
     <Compile Include="Transact.cs" />
+    <EmbeddedResource Include="Cuadre.rdlc" />
     <EmbeddedResource Include="frmCuadre.resx">
       <DependentUpon>frmCuadre.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCuadreReport.resx">
+      <DependentUpon>frmCuadreReport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmInsertarTransaccion.resx">
       <DependentUpon>frmInsertarTransaccion.cs</DependentUpon>
@@ -312,6 +323,7 @@
     </Compile>
     <EmbeddedResource Include="Recibo.rdlc" />
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\Cuadre.datasource" />
     <None Include="Properties\DataSources\Recibo.datasource" />
     <None Include="Properties\DataSources\Transaccion.datasource" />
     <None Include="Properties\Settings.settings">
